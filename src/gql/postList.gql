@@ -1,0 +1,13 @@
+query myAwesomePosts {
+  posts(limit: 10) {
+    nodes {
+      createdAt
+      title
+    }
+    totalCount
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+  }
+}

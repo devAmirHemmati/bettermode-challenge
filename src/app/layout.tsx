@@ -3,8 +3,10 @@ import './globals.css';
 import type { Metadata } from 'next';
 import localFont from 'next/font/local';
 
+import ApolloProvider from '@/configs/apolloProvider';
+
 const geistSans = localFont({
-  src: './fonts/GeistVF.woff',
+  src: './../assets/fonts/GeistVF.woff',
   variable: '--font-geist-sans',
   weight: '100 900',
 });
@@ -24,7 +26,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} font-[family-name:var(--font-geist-sans)] antialiased`}
       >
-        {children}
+        <ApolloProvider>{children}</ApolloProvider>
       </body>
     </html>
   );

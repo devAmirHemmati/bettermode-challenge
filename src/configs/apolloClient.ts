@@ -5,7 +5,7 @@ import {
   registerApolloClient,
 } from '@apollo/experimental-nextjs-app-support';
 
-export const { query, PreloadQuery } = registerApolloClient(() => {
+export const { query, PreloadQuery, getClient } = registerApolloClient(() => {
   return new ApolloClient({
     cache: new InMemoryCache(),
     uri: 'https://api.bettermode.com/',

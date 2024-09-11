@@ -1,6 +1,15 @@
 {
-  "extends": ["next/core-web-vitals", "next/typescript"],
-  "plugins": ["simple-import-sort", "import", "unused-imports"],
+  "extends": [
+    "next/core-web-vitals",
+    "next/typescript",
+    "plugin:storybook/recommended",
+    "plugin:storybook/recommended"
+  ],
+  "plugins": [
+    "simple-import-sort",
+    "import",
+    "unused-imports"
+  ],
   "rules": {
     "simple-import-sort/imports": "error",
     "simple-import-sort/exports": "error",
@@ -14,6 +23,7 @@
         "args": "after-used",
         "argsIgnorePattern": "^_"
       }
-    ]
+    ],
+    "@typescript-eslint/no-explicit-any": "off"
   }
 }

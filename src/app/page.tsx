@@ -1,18 +1,16 @@
-import { Suspense } from 'react';
+import { query } from '@/configs/apolloClient';
+import { MyAwesomePostsDocument } from '@/gql/generated';
 
-import { ClientChild } from '@/components/child';
-import { PreloadQuery } from '@/configs/apolloClient';
+import PostListPage from './postList';
 
-import { MyAwesomePostsDocument } from '../../generated/graphql';
+async function _PostListPage() {
+  const postListQuery = await query({
+    query: MyAwesomePostsDocument,
+  });
 
-async function PostListPage() {
-  return (
-    <PreloadQuery query={MyAwesomePostsDocument}>
-      <Suspense fallback={<>loading</>}>
-        <ClientChild />
-      </Suspense>
-    </PreloadQuery>
-  );
+  return <PostListPage postListQuery={postListQuery} />;
 }
 
-export default PostListPage;
+export const dynamic = 'force-dynamic';
+
+export default _PostListPage;

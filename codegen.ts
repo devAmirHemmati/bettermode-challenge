@@ -5,7 +5,7 @@ const config: CodegenConfig = {
   schema: 'https://api.bettermode.com/',
   documents: ['./src/gql/**/*.gql'],
   generates: {
-    'generated/graphql.tsx': {
+    'src/gql/generated.tsx': {
       plugins: [
         'typescript',
         'typescript-operations',

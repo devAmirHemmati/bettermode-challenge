@@ -1,15 +1,9 @@
 import './globals.css';
 
 import type { Metadata } from 'next';
-import localFont from 'next/font/local';
 
 import ApolloProvider from '@/configs/apolloProvider';
-
-const geistSans = localFont({
-  src: './../assets/fonts/GeistVF.woff',
-  variable: '--font-geist-sans',
-  weight: '100 900',
-});
+import { geistSans } from '@/configs/fonts';
 
 export const metadata: Metadata = {
   title: 'BetterMode',

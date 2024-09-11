@@ -2,9 +2,8 @@ import { AllHTMLAttributes, PropsWithChildren, useId } from 'react';
 
 import Typography from '../typography';
 
-export interface IInputProps
-  extends PropsWithChildren<AllHTMLAttributes<HTMLInputElement>> {
-  type?: 'text' | 'number';
+export interface ITextareaProps
+  extends PropsWithChildren<AllHTMLAttributes<HTMLTextAreaElement>> {
   label?: string;
   id?: string;
   inputClassName?: string;
@@ -15,17 +14,16 @@ export interface IInputProps
 }
 
 function Input({
-  type = 'text',
   label,
   id,
   className,
   inputClassName,
-  success,
-  successMessage,
   error,
   errorMessage,
+  success,
+  successMessage,
   ...props
-}: IInputProps) {
+}: ITextareaProps) {
   const reactId = useId();
   const _id = id || reactId;
 
@@ -42,10 +40,10 @@ function Input({
         </Typography>
       )}
 
-      <input
+      <textarea
         {...props}
-        type={type}
         id={_id}
+        rows={4}
         className={`block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 ${error && 'border-red-400 focus:outline-red-400 focus:border-red-400'} ${success && 'border-green-500 focus:outline-green-500 focus:border-green-500'} ${inputClassName}`}
       />
 

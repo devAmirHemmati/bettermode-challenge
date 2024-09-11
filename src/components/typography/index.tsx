@@ -30,11 +30,12 @@ const variantStyles = {
 const Typography: FC<ITypographyProps> = ({
   component: Component = 'p',
   variant = 'md',
+  className,
   children,
   ...props
 }: ITypographyProps) => {
   return (
-    <Component className={`${variantStyles[variant]}`} {...props}>
+    <Component className={`${variantStyles[variant]} ${className}`} {...props}>
       {children}
     </Component>
   );

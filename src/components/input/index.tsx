@@ -12,6 +12,7 @@ export interface IInputProps
   error?: boolean;
   successMessage?: string;
   success?: boolean;
+  hint?: string;
 }
 
 function Input({
@@ -21,9 +22,12 @@ function Input({
   className,
   inputClassName,
   success,
+  hint,
   successMessage,
   error,
   errorMessage,
+  onChange,
+  max,
   ...props
 }: IInputProps) {
   const reactId = useId();
@@ -47,7 +51,22 @@ function Input({
         type={type}
         id={_id}
         className={`block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 ${error && 'border-red-400 focus:outline-red-400 focus:border-red-400'} ${success && 'border-green-500 focus:outline-green-500 focus:border-green-500'} ${inputClassName}`}
+        onChange={(event) => {
+          if (max && event.target.value.length > parseInt(`${max}`)) {
+            return;
+          }
+
+          if (typeof onChange === 'function') {
+            onChange(event);
+          }
+        }}
       />
+
+      {hint && !success && !error && !errorMessage && !successMessage && (
+        <Typography variant="sm" className="mt-1 text-gray-600">
+          {hint}
+        </Typography>
+      )}
 
       {success && successMessage && (
         <Typography variant="sm" className="mt-1 text-green-500">

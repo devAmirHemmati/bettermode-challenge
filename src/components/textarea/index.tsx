@@ -13,7 +13,7 @@ export interface ITextareaProps
   success?: boolean;
 }
 
-function Input({
+function Textarea({
   label,
   id,
   className,
@@ -43,8 +43,8 @@ function Input({
       <textarea
         {...props}
         id={_id}
-        rows={4}
-        className={`block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 ${error && 'border-red-400 focus:outline-red-400 focus:border-red-400'} ${success && 'border-green-500 focus:outline-green-500 focus:border-green-500'} ${inputClassName}`}
+        rows={5}
+        className={`block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 ${error && 'border-red-400 focus:outline-red-400 focus:border-red-400'} ${success && 'border-green-500 focus:outline-green-500 focus:border-green-500'} resize-none ${inputClassName}`}
       />
 
       {success && successMessage && (
@@ -62,4 +62,4 @@ function Input({
   );
 }
 
-export default Input;
+export default Textarea;

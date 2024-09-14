@@ -4,6 +4,8 @@ export interface IButtonProps
   extends PropsWithChildren<AllHTMLAttributes<HTMLButtonElement>> {
   type?: 'button' | 'submit';
   variant?: keyof typeof variantStyles;
+  fullWidth?: boolean;
+  loading?: boolean;
 }
 
 const variantStyles = {
@@ -16,13 +18,18 @@ const variantStyles = {
 function Button({
   children,
   type = 'button',
+  className = '',
   variant = 'primary',
+  fullWidth,
+  disabled,
+  loading,
   ...props
 }: IButtonProps) {
   return (
     <button
       type={type}
-      className={`font-bold py-2 px-4 border rounded transition-all active:scale-95 disabled:opacity-70 disabled:active:scale-100 ${variantStyles[variant]}`}
+      className={`font-bold py-2 px-4 border rounded transition-all active:scale-95 disabled:opacity-70 disabled:active:scale-100 ${variantStyles[variant]} ${fullWidth && 'w-full'} ${className}`}
+      disabled={disabled || loading}
       {...props}
     >
       {children}

@@ -1,7 +1,7 @@
 import { query } from '@/configs/apolloClient';
 import { MyAwesomePostsDocument } from '@/gql/generated';
 
-import PostListPage from './postList';
+import PostListPage from './posts';
 
 async function _PostListPage() {
   const postListQuery = await query({

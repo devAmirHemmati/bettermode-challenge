@@ -1,6 +1,8 @@
 import './globals.css';
+import 'react-toastify/dist/ReactToastify.css';
 
 import type { Metadata } from 'next';
+import { ToastContainer } from 'react-toastify';
 
 import ApolloProvider from '@/configs/apolloProvider';
 import { geistSans } from '@/configs/fonts';
@@ -20,7 +22,13 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} font-[family-name:var(--font-geist-sans)] antialiased`}
       >
-        <ApolloProvider>{children}</ApolloProvider>
+        <ApolloProvider>
+          <ToastContainer position="bottom-center" />
+
+          <div className="py-[15px] flex justify-center items-center h-[calc(100vh-30px)]">
+            {children}
+          </div>
+        </ApolloProvider>
       </body>
     </html>
   );

@@ -1,4 +1,4 @@
-import PostListPage from './postList';
+import PostListPage from './posts';
 
 function Loading() {
   return <PostListPage loading />;

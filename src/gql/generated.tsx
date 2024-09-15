@@ -2514,7 +2514,6 @@ export type Mutation = {
   createBadge: Badge;
   createBillingPortalSession: BillingPortalSession;
   createCollection: Collection;
-  createEmailDigestPreview: Action;
   /** @deprecated Use Glyphs instead, just update the media id with `emoji/...` */
   createEmojis: Array<Emoji>;
   createExportMemberRequest: Export;
@@ -2658,6 +2657,7 @@ export type Mutation = {
   revokeBadge: Action;
   revokeMemberInvitation: Action;
   runMigration: Migration;
+  sendEmailDigestPreview: Action;
   sendResetPasswordEmail: Action;
   setPrivatelyPublishedApps: Array<AppPublication>;
   /** @deprecated This mutation will be replaced by loginWithSsoCode */
@@ -2909,10 +2909,6 @@ export type MutationCreateBillingPortalSessionArgs = {
 
 export type MutationCreateCollectionArgs = {
   input: CreateCollectionInput;
-};
-
-export type MutationCreateEmailDigestPreviewArgs = {
-  memberId: Scalars['ID']['input'];
 };
 
 export type MutationCreateEmojisArgs = {
@@ -3370,6 +3366,10 @@ export type MutationRevokeMemberInvitationArgs = {
 
 export type MutationRunMigrationArgs = {
   id: Scalars['String']['input'];
+};
+
+export type MutationSendEmailDigestPreviewArgs = {
+  memberId?: InputMaybe<Scalars['ID']['input']>;
 };
 
 export type MutationSendResetPasswordEmailArgs = {
@@ -4135,6 +4135,7 @@ export type NotificationMeta = {
 
 export type NotificationNetworkSettings = {
   __typename?: 'NotificationNetworkSettings';
+  emailDigestEnabled: Scalars['Boolean']['output'];
   emailEnabled: Scalars['Boolean']['output'];
   emailFrom?: Maybe<Scalars['String']['output']>;
   emailNotificationEnabled: Scalars['Boolean']['output'];
@@ -4164,6 +4165,14 @@ export type NotificationSubscriptionEdge = {
   cursor: Scalars['String']['output'];
   node: NotificationSubscription;
 };
+
+export enum NotificationTrigger {
+  Mention = 'MENTION',
+  Message = 'MESSAGE',
+  Reaction = 'REACTION',
+  Subscription = 'SUBSCRIPTION',
+  System = 'SYSTEM',
+}
 
 export enum NotificationVerb {
   CommentCreated = 'COMMENT_CREATED',
@@ -7387,15 +7396,25 @@ export type Subscriber = {
   emailDigestEnabled: Scalars['Boolean']['output'];
   emailDigestSendFrequency: EmailDigestFrequency;
   emailDigestWeeklySendDay: DayOfWeek;
-  emailSubscriptionEnabled: Scalars['Boolean']['output'];
+  /** @deprecated Use instantEmailTriggers instead. */
+  emailSubscriptionEnabled?: Maybe<Scalars['Boolean']['output']>;
   fcmDeviceTokens: Array<Scalars['String']['output']>;
   id: Scalars['ID']['output'];
-  mentionEmailEnabled: Scalars['Boolean']['output'];
-  mentionSubscriptionEnabled: Scalars['Boolean']['output'];
-  messageEmailEnabled: Scalars['Boolean']['output'];
+  /** Array of instant email triggers that the subscriber will receive. Similar to notification triggers, these can include various events that prompt an immediate email. If this array is empty, the subscriber will not receive any instant emails. */
+  instantEmailTriggers: Array<NotificationTrigger>;
+  /** @deprecated Use instantEmailTriggers instead. */
+  mentionEmailEnabled?: Maybe<Scalars['Boolean']['output']>;
+  /** @deprecated Use notificationTriggers instead. */
+  mentionSubscriptionEnabled?: Maybe<Scalars['Boolean']['output']>;
+  /** @deprecated Use instantEmailTriggers instead. */
+  messageEmailEnabled?: Maybe<Scalars['Boolean']['output']>;
   networkId: Scalars['String']['output'];
-  reactionEmailEnabled: Scalars['Boolean']['output'];
-  reactionSubscriptionEnabled: Scalars['Boolean']['output'];
+  /** Array of notification triggers that the subscriber will receive. If this array is empty, the subscriber will not receive any notifications. */
+  notificationTriggers: Array<NotificationTrigger>;
+  /** @deprecated Use instantEmailTriggers instead. */
+  reactionEmailEnabled?: Maybe<Scalars['Boolean']['output']>;
+  /** @deprecated Use notificationTriggers instead. */
+  reactionSubscriptionEnabled?: Maybe<Scalars['Boolean']['output']>;
 };
 
 export type SubscriberEdge = {
@@ -8154,12 +8173,16 @@ export type UpdateSubscriberInput = {
   emailSubscriptionEnabled?: InputMaybe<Scalars['Boolean']['input']>;
   /** For each FCM devices token, the subscriber will receive push notifications. */
   fcmDeviceTokens?: InputMaybe<Array<Scalars['String']['input']>>;
+  /** Array of instant email triggers that the subscriber will receive. Similar to notification triggers, these can include various events that prompt an immediate email. If this array is empty, the subscriber will not receive any instant emails. */
+  instantEmailTriggers?: InputMaybe<Array<NotificationTrigger>>;
   /** If enabled, the subscriber will receive emails if they are mentioned in a post or reply. */
   mentionEmailEnabled?: InputMaybe<Scalars['Boolean']['input']>;
   /** If enabled, the subscriber will receive notifications if they are mentioned in a post or reply. */
   mentionSubscriptionEnabled?: InputMaybe<Scalars['Boolean']['input']>;
   /** If enabled, the subscriber will receive emails if they receive a message. */
   messageEmailEnabled?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Array of notification triggers that the subscriber will receive. If this array is empty, the subscriber will not receive any notifications. */
+  notificationTriggers?: InputMaybe<Array<NotificationTrigger>>;
   /** If enabled, the subscriber will receive emails if someone reacts to their post or reply. */
   reactionEmailEnabled?: InputMaybe<Scalars['Boolean']['input']>;
   /** If enabled, the subscriber will receive notifications if someone reacts to their post or reply. */
@@ -8366,6 +8389,15 @@ export type SubscriptionInput = {
   id: Scalars['String']['input'];
 };
 
+export type AuthValidationEmailMutationMutationVariables = Exact<{
+  email: Scalars['String']['input'];
+}>;
+
+export type AuthValidationEmailMutationMutation = {
+  __typename?: 'Mutation';
+  requestGlobalTokenCode: { __typename?: 'Action'; status: ActionStatus };
+};
+
 export type MyAwesomePostsQueryVariables = Exact<{ [key: string]: never }>;
 
 export type MyAwesomePostsQuery = {
@@ -8386,6 +8418,57 @@ export type MyAwesomePostsQuery = {
   };
 };
 
+export const AuthValidationEmailMutationDocument = gql`
+  mutation AuthValidationEmailMutation($email: String!) {
+    requestGlobalTokenCode(input: { email: $email }) {
+      status
+    }
+  }
+`;
+export type AuthValidationEmailMutationMutationFn = Apollo.MutationFunction<
+  AuthValidationEmailMutationMutation,
+  AuthValidationEmailMutationMutationVariables
+>;
+
+/**
+ * __useAuthValidationEmailMutationMutation__
+ *
+ * To run a mutation, you first call `useAuthValidationEmailMutationMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAuthValidationEmailMutationMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [authValidationEmailMutationMutation, { data, loading, error }] = useAuthValidationEmailMutationMutation({
+ *   variables: {
+ *      email: // value for 'email'
+ *   },
+ * });
+ */
+export function useAuthValidationEmailMutationMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    AuthValidationEmailMutationMutation,
+    AuthValidationEmailMutationMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    AuthValidationEmailMutationMutation,
+    AuthValidationEmailMutationMutationVariables
+  >(AuthValidationEmailMutationDocument, options);
+}
+export type AuthValidationEmailMutationMutationHookResult = ReturnType<
+  typeof useAuthValidationEmailMutationMutation
+>;
+export type AuthValidationEmailMutationMutationResult =
+  Apollo.MutationResult<AuthValidationEmailMutationMutation>;
+export type AuthValidationEmailMutationMutationOptions =
+  Apollo.BaseMutationOptions<
+    AuthValidationEmailMutationMutation,
+    AuthValidationEmailMutationMutationVariables
+  >;
 export const MyAwesomePostsDocument = gql`
   query myAwesomePosts {
     posts(limit: 10) {

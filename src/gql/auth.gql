@@ -1,0 +1,5 @@
+mutation AuthValidationEmailMutation($email: String!) {
+  requestGlobalTokenCode(input: { email: $email }) {
+    status
+  }
+}

@@ -1,7 +1,7 @@
 import { IIconProps } from '.';
 
 function BackIcon({
-  color = '#171717',
+  color = 'currentColor',
   height = '26px',
   width = '26px',
   ...props

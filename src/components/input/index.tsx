@@ -51,15 +51,19 @@ function Input({
         type={type}
         id={_id}
         className={`block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 ${error && 'border-red-400 focus:outline-red-400 focus:border-red-400'} ${success && 'border-green-500 focus:outline-green-500 focus:border-green-500'} ${inputClassName}`}
-        onChange={(event) => {
-          if (max && event.target.value.length > parseInt(`${max}`)) {
-            return;
-          }
+        onChange={
+          typeof window !== 'undefined'
+            ? (event) => {
+                if (max && event.target.value.length > parseInt(`${max}`)) {
+                  return;
+                }
 
-          if (typeof onChange === 'function') {
-            onChange(event);
-          }
-        }}
+                if (typeof onChange === 'function') {
+                  onChange(event);
+                }
+              }
+            : undefined
+        }
       />
 
       {hint && !success && !error && !errorMessage && !successMessage && (

@@ -1,7 +1,14 @@
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
-import { Button, Card, Input, Textarea, Typography } from '@/components';
+import {
+  Button,
+  Card,
+  Container,
+  Input,
+  Textarea,
+  Typography,
+} from '@/components';
 import { BackIcon } from '@/components/icons';
 import NAVIGATION from '@/data/routes';
 import { useForm } from '@/hooks';
@@ -33,29 +40,33 @@ function NewPostPage() {
   });
 
   return (
-    <form className="w-[800px]" onSubmit={handleSubmit}>
-      <Card>
-        <div className="flex items-center gap-2 mb-4">
-          <Link href={NAVIGATION.POST_LIST}>
-            <BackIcon />
-          </Link>
+    <Container>
+      <div className="w-full h-full flex justify-center items-center">
+        <form className="w-[800px]" onSubmit={handleSubmit}>
+          <Card>
+            <div className="flex items-center gap-2 mb-4">
+              <Link href={NAVIGATION.POST_LIST}>
+                <BackIcon />
+              </Link>
 
-          <Typography variant="titleMd">Create a new discussion</Typography>
-        </div>
+              <Typography variant="titleMd">Create a new discussion</Typography>
+            </div>
 
-        <Input {...register('title')} />
+            <Input {...register('title')} />
 
-        <Textarea className="mt-5" {...register('content')} />
+            <Textarea className="mt-5" {...register('content')} />
 
-        <div className="flex flex-row-reverse items-center gap-2 mt-12">
-          <Button type="submit">Publish</Button>
+            <div className="flex flex-row-reverse items-center gap-2 mt-12">
+              <Button type="submit">Publish</Button>
 
-          <Link href={NAVIGATION.POST_LIST}>
-            <Button variant="neutral">Cancel</Button>
-          </Link>
-        </div>
-      </Card>
-    </form>
+              <Link href={NAVIGATION.POST_LIST}>
+                <Button variant="neutral">Cancel</Button>
+              </Link>
+            </div>
+          </Card>
+        </form>
+      </div>
+    </Container>
   );
 }
 

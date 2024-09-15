@@ -2,8 +2,10 @@ import type { Meta } from '@storybook/react';
 
 import Table, { ITableProps } from '.';
 import TBody from './tBody';
+import Td from './td';
+import Th from './th';
 import THead from './tHead';
-import Tr, { Td } from './tr';
+import Tr from './tr';
 
 const meta = {
   title: 'Component/Table',
@@ -15,17 +17,19 @@ export const Single = ({}: ITableProps) => {
   return (
     <Table>
       <THead>
-        <Td>Title</Td>
+        <Th>Title</Th>
 
-        <Td>Author</Td>
+        <Th>Author</Th>
 
-        <Td>Space</Td>
+        <Th>Space</Th>
 
-        <Td>Published at</Td>
+        <Th>Published at</Th>
 
-        <Td>Replies</Td>
+        <Th hasArrow>Replies</Th>
 
-        <Td>Reactions</Td>
+        <Th hasArrow arrow="top">
+          Reactions
+        </Th>
       </THead>
 
       <TBody>

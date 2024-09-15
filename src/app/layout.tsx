@@ -25,9 +25,7 @@ export default function RootLayout({
         <ApolloProvider>
           <ToastContainer position="bottom-center" />
 
-          <div className="py-[15px] flex justify-center items-center h-[calc(100vh-30px)]">
-            {children}
-          </div>
+          <div className="w-full h-[calc(100vh-30px)]">{children}</div>
         </ApolloProvider>
       </body>
     </html>

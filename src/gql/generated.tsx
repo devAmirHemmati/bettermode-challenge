@@ -8427,6 +8427,7 @@ export type PostListQueryVariables = Exact<{
   limit: Scalars['Int']['input'];
   orderByString?: InputMaybe<Scalars['String']['input']>;
   reverse?: InputMaybe<Scalars['Boolean']['input']>;
+  query?: InputMaybe<Scalars['String']['input']>;
 }>;
 
 export type PostListQuery = {
@@ -8608,12 +8609,14 @@ export const PostListDocument = gql`
     $limit: Int!
     $orderByString: String
     $reverse: Boolean
+    $query: String
   ) {
     posts(
       offset: $offset
       limit: $limit
       orderByString: $orderByString
       reverse: $reverse
+      query: $query
     ) {
       nodes {
         id
@@ -8655,6 +8658,7 @@ export const PostListDocument = gql`
  *      limit: // value for 'limit'
  *      orderByString: // value for 'orderByString'
  *      reverse: // value for 'reverse'
+ *      query: // value for 'query'
  *   },
  * });
  */

@@ -28,7 +28,8 @@ interface IPostListPage {
 }
 
 function PostListPage({ loading, initialVariables }: IPostListPage) {
-  const { postListQuery } = usePostList(initialVariables);
+  const { postListQuery, variables, handleChangeOrderBy, handleSearch } =
+    usePostList(initialVariables);
   const tHeads = [
     {
       label: 'Title',
@@ -41,22 +42,18 @@ function PostListPage({ loading, initialVariables }: IPostListPage) {
     },
     {
       label: 'Published at',
-      hasArrow: true,
-      arrow: undefined,
+      orderKey: 'createdAt',
     },
     {
       label: 'Replies',
-      hasArrow: true,
-      arrow: undefined,
+      orderKey: 'totalRepliesCount',
     },
     {
       label: 'Reactions',
-      hasArrow: true,
-      arrow: undefined,
+      orderKey: 'reactionsCount',
     },
   ];
 
-  console.log('index.tsx: ', postListQuery);
   return (
     <Container>
       <Flex justify="between" flexWrap className="gap-x-20 gap-y-3">
@@ -69,7 +66,10 @@ function PostListPage({ loading, initialVariables }: IPostListPage) {
             inputClassName="h-full w-full"
             className="w-full"
             placeholder="Search ..."
-            onChange={() => {}}
+            value={variables?.query || ''}
+            onChange={event => {
+              handleSearch(event.currentTarget.value);
+            }}
           />
 
           <NextLink href={NAVIGATION.NEW_POST} prefetch>
@@ -83,9 +83,21 @@ function PostListPage({ loading, initialVariables }: IPostListPage) {
       <div className="mt-5">
         <Table>
           <THead>
-            {tHeads.map(({ label, ...trProps }, index) => {
+            {tHeads.map(({ label, orderKey }, index) => {
+              const hasOrderKey = typeof orderKey === 'string';
+              const isActiveOrderKey = variables?.orderByString === orderKey;
+              const arrow = variables?.reverse ? 'bottom' : 'top';
+
               return (
-                <Th key={index} {...trProps}>
+                <Th
+                  key={index}
+                  hasArrow={hasOrderKey}
+                  arrow={isActiveOrderKey ? arrow : undefined}
+                  onClick={() => {
+                    if (!orderKey) return;
+                    handleChangeOrderBy(orderKey);
+                  }}
+                >
                   {label}
                 </Th>
               );

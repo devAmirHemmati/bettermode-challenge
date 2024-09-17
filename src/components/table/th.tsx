@@ -17,7 +17,7 @@ function Th({ className = '', children, arrow, hasArrow, ...props }: IThProps) {
       <div className="flex items-center gap-2">
         {children}
 
-        {typeof arrow === 'string' && (
+        {hasArrow && typeof arrow === 'string' && (
           <ArrowDown
             width="16px"
             height="16px"

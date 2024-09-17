@@ -3,12 +3,14 @@ query postList(
   $limit: Int!
   $orderByString: String
   $reverse: Boolean
+  $query: String
 ) {
   posts(
     offset: $offset
     limit: $limit
     orderByString: $orderByString
     reverse: $reverse
+    query: $query
   ) {
     nodes {
       id

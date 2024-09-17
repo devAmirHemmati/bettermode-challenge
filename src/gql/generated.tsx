@@ -8398,17 +8398,54 @@ export type AuthValidationEmailMutationMutation = {
   requestGlobalTokenCode: { __typename?: 'Action'; status: ActionStatus };
 };
 
-export type MyAwesomePostsQueryVariables = Exact<{ [key: string]: never }>;
+export type InitializeAppQueryVariables = Exact<{ [key: string]: never }>;
 
-export type MyAwesomePostsQuery = {
+export type InitializeAppQuery = {
+  __typename?: 'Query';
+  subscriberSettings: {
+    __typename?: 'Subscriber';
+    id: string;
+    networkId: string;
+  };
+  postTypes: {
+    __typename?: 'PaginatedPostType';
+    nodes?: Array<{ __typename?: 'PostType'; name: string; id: string }> | null;
+  };
+  spaces: {
+    __typename?: 'PaginatedSpace';
+    nodes?: Array<{
+      __typename?: 'Space';
+      id: string;
+      name: string;
+      imageId?: string | null;
+    }> | null;
+  };
+};
+
+export type PostListQueryVariables = Exact<{
+  offset: Scalars['Int']['input'];
+  limit: Scalars['Int']['input'];
+  orderByString?: InputMaybe<Scalars['String']['input']>;
+  reverse?: InputMaybe<Scalars['Boolean']['input']>;
+}>;
+
+export type PostListQuery = {
   __typename?: 'Query';
   posts: {
     __typename?: 'PaginatedPost';
     totalCount?: number | null;
     nodes?: Array<{
       __typename?: 'Post';
-      createdAt: any;
+      id: string;
       title?: string | null;
+      createdAt: any;
+      reactionsCount: number;
+      totalRepliesCount: number;
+      owner?: {
+        __typename?: 'SpaceMember';
+        member?: { __typename?: 'Member'; name?: string | null } | null;
+      } | null;
+      space?: { __typename?: 'Space'; name: string } | null;
     }> | null;
     pageInfo: {
       __typename?: 'PageInfo';
@@ -8416,6 +8453,16 @@ export type MyAwesomePostsQuery = {
       endCursor?: string | null;
     };
   };
+};
+
+export type CreatePostMutationVariables = Exact<{
+  input: CreatePostInput;
+  spaceId: Scalars['ID']['input'];
+}>;
+
+export type CreatePostMutation = {
+  __typename?: 'Mutation';
+  createPost: { __typename?: 'Post'; status: PostStatus };
 };
 
 export const AuthValidationEmailMutationDocument = gql`
@@ -8469,12 +8516,119 @@ export type AuthValidationEmailMutationMutationOptions =
     AuthValidationEmailMutationMutation,
     AuthValidationEmailMutationMutationVariables
   >;
-export const MyAwesomePostsDocument = gql`
-  query myAwesomePosts {
-    posts(limit: 10) {
+export const InitializeAppDocument = gql`
+  query initializeApp {
+    subscriberSettings {
+      id
+      networkId
+    }
+    postTypes(limit: 10) {
       nodes {
-        createdAt
+        name
+        id
+      }
+    }
+    spaces(limit: 30) {
+      nodes {
+        id
+        name
+        imageId
+      }
+    }
+  }
+`;
+
+/**
+ * __useInitializeAppQuery__
+ *
+ * To run a query within a React component, call `useInitializeAppQuery` and pass it any options that fit your needs.
+ * When your component renders, `useInitializeAppQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useInitializeAppQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useInitializeAppQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    InitializeAppQuery,
+    InitializeAppQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<InitializeAppQuery, InitializeAppQueryVariables>(
+    InitializeAppDocument,
+    options,
+  );
+}
+export function useInitializeAppLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    InitializeAppQuery,
+    InitializeAppQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<InitializeAppQuery, InitializeAppQueryVariables>(
+    InitializeAppDocument,
+    options,
+  );
+}
+export function useInitializeAppSuspenseQuery(
+  baseOptions?: Apollo.SuspenseQueryHookOptions<
+    InitializeAppQuery,
+    InitializeAppQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<
+    InitializeAppQuery,
+    InitializeAppQueryVariables
+  >(InitializeAppDocument, options);
+}
+export type InitializeAppQueryHookResult = ReturnType<
+  typeof useInitializeAppQuery
+>;
+export type InitializeAppLazyQueryHookResult = ReturnType<
+  typeof useInitializeAppLazyQuery
+>;
+export type InitializeAppSuspenseQueryHookResult = ReturnType<
+  typeof useInitializeAppSuspenseQuery
+>;
+export type InitializeAppQueryResult = Apollo.QueryResult<
+  InitializeAppQuery,
+  InitializeAppQueryVariables
+>;
+export const PostListDocument = gql`
+  query postList(
+    $offset: Int!
+    $limit: Int!
+    $orderByString: String
+    $reverse: Boolean
+  ) {
+    posts(
+      offset: $offset
+      limit: $limit
+      orderByString: $orderByString
+      reverse: $reverse
+    ) {
+      nodes {
+        id
         title
+        owner {
+          member {
+            name
+          }
+        }
+        space {
+          name
+        }
+        createdAt
+        reactionsCount
+        totalRepliesCount
       }
       totalCount
       pageInfo {
@@ -8486,66 +8640,117 @@ export const MyAwesomePostsDocument = gql`
 `;
 
 /**
- * __useMyAwesomePostsQuery__
+ * __usePostListQuery__
  *
- * To run a query within a React component, call `useMyAwesomePostsQuery` and pass it any options that fit your needs.
- * When your component renders, `useMyAwesomePostsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `usePostListQuery` and pass it any options that fit your needs.
+ * When your component renders, `usePostListQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useMyAwesomePostsQuery({
+ * const { data, loading, error } = usePostListQuery({
  *   variables: {
+ *      offset: // value for 'offset'
+ *      limit: // value for 'limit'
+ *      orderByString: // value for 'orderByString'
+ *      reverse: // value for 'reverse'
  *   },
  * });
  */
-export function useMyAwesomePostsQuery(
-  baseOptions?: Apollo.QueryHookOptions<
-    MyAwesomePostsQuery,
-    MyAwesomePostsQueryVariables
-  >,
+export function usePostListQuery(
+  baseOptions: Apollo.QueryHookOptions<PostListQuery, PostListQueryVariables> &
+    ({ variables: PostListQueryVariables; skip?: boolean } | { skip: boolean }),
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<MyAwesomePostsQuery, MyAwesomePostsQueryVariables>(
-    MyAwesomePostsDocument,
+  return Apollo.useQuery<PostListQuery, PostListQueryVariables>(
+    PostListDocument,
     options,
   );
 }
-export function useMyAwesomePostsLazyQuery(
+export function usePostListLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
-    MyAwesomePostsQuery,
-    MyAwesomePostsQueryVariables
+    PostListQuery,
+    PostListQueryVariables
   >,
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<MyAwesomePostsQuery, MyAwesomePostsQueryVariables>(
-    MyAwesomePostsDocument,
+  return Apollo.useLazyQuery<PostListQuery, PostListQueryVariables>(
+    PostListDocument,
     options,
   );
 }
-export function useMyAwesomePostsSuspenseQuery(
+export function usePostListSuspenseQuery(
   baseOptions?: Apollo.SuspenseQueryHookOptions<
-    MyAwesomePostsQuery,
-    MyAwesomePostsQueryVariables
+    PostListQuery,
+    PostListQueryVariables
   >,
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useSuspenseQuery<
-    MyAwesomePostsQuery,
-    MyAwesomePostsQueryVariables
-  >(MyAwesomePostsDocument, options);
+  return Apollo.useSuspenseQuery<PostListQuery, PostListQueryVariables>(
+    PostListDocument,
+    options,
+  );
 }
-export type MyAwesomePostsQueryHookResult = ReturnType<
-  typeof useMyAwesomePostsQuery
+export type PostListQueryHookResult = ReturnType<typeof usePostListQuery>;
+export type PostListLazyQueryHookResult = ReturnType<
+  typeof usePostListLazyQuery
 >;
-export type MyAwesomePostsLazyQueryHookResult = ReturnType<
-  typeof useMyAwesomePostsLazyQuery
+export type PostListSuspenseQueryHookResult = ReturnType<
+  typeof usePostListSuspenseQuery
 >;
-export type MyAwesomePostsSuspenseQueryHookResult = ReturnType<
-  typeof useMyAwesomePostsSuspenseQuery
+export type PostListQueryResult = Apollo.QueryResult<
+  PostListQuery,
+  PostListQueryVariables
 >;
-export type MyAwesomePostsQueryResult = Apollo.QueryResult<
-  MyAwesomePostsQuery,
-  MyAwesomePostsQueryVariables
+export const CreatePostDocument = gql`
+  mutation createPost($input: CreatePostInput!, $spaceId: ID!) {
+    createPost(input: $input, spaceId: $spaceId) {
+      status
+    }
+  }
+`;
+export type CreatePostMutationFn = Apollo.MutationFunction<
+  CreatePostMutation,
+  CreatePostMutationVariables
+>;
+
+/**
+ * __useCreatePostMutation__
+ *
+ * To run a mutation, you first call `useCreatePostMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreatePostMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createPostMutation, { data, loading, error }] = useCreatePostMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *      spaceId: // value for 'spaceId'
+ *   },
+ * });
+ */
+export function useCreatePostMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    CreatePostMutation,
+    CreatePostMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<CreatePostMutation, CreatePostMutationVariables>(
+    CreatePostDocument,
+    options,
+  );
+}
+export type CreatePostMutationHookResult = ReturnType<
+  typeof useCreatePostMutation
+>;
+export type CreatePostMutationResult =
+  Apollo.MutationResult<CreatePostMutation>;
+export type CreatePostMutationOptions = Apollo.BaseMutationOptions<
+  CreatePostMutation,
+  CreatePostMutationVariables
 >;

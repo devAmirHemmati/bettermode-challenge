@@ -1,4 +1,7 @@
 {
   "semi": true,
-  "singleQuote": true
+  "singleQuote": true,
+  "insertPragma": false,
+  "requirePragma": false,
+  "arrowParens": "avoid"
 }

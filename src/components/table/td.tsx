@@ -1,15 +1,19 @@
 import { AllHTMLAttributes, PropsWithChildren } from 'react';
 
-interface ITdProps extends PropsWithChildren<AllHTMLAttributes<HTMLElement>> {}
+import { LinedSkeleton } from '../skeleton';
 
-function Td({ className = '', children, ...props }: ITdProps) {
+interface ITdProps extends PropsWithChildren<AllHTMLAttributes<HTMLElement>> {
+  loading?: boolean;
+}
+
+function Td({ className = '', children, loading, ...props }: ITdProps) {
   return (
     <td
       scope="row"
       className={`px-6 py-4 font-medium text-gray-900 whitespace-nowrap ${className}`}
       {...props}
     >
-      {children}
+      {loading ? <LinedSkeleton /> : children}
     </td>
   );
 }

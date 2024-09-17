@@ -1,11 +1,12 @@
-import { ApolloQueryResult } from '@apollo/client';
-import Link from 'next/link';
+'use client';
+import NextLink from 'next/link';
 
 import {
   Button,
   Container,
   Flex,
   Input,
+  Link,
   Table,
   TBody,
   Td,
@@ -15,20 +16,53 @@ import {
   Typography,
 } from '@/components';
 import NAVIGATION from '@/data/routes';
-import { MyAwesomePostsQuery } from '@/gql/generated';
+import { PostListQueryVariables } from '@/gql/generated';
+import transformDate from '@/utils/date';
+
+import usePostList from './usePostList';
 
 interface IPostListPage {
-  postListQuery?: ApolloQueryResult<MyAwesomePostsQuery | undefined>;
+  // postListQuery?: ApolloQueryResult<PostListQuery | undefined>;
   loading?: boolean;
+  initialVariables?: PostListQueryVariables;
 }
 
-function PostListPage({ postListQuery }: IPostListPage) {
-  console.log(postListQuery);
+function PostListPage({ loading, initialVariables }: IPostListPage) {
+  const { postListQuery } = usePostList(initialVariables);
+  const tHeads = [
+    {
+      label: 'Title',
+    },
+    {
+      label: 'Author',
+    },
+    {
+      label: 'Space',
+    },
+    {
+      label: 'Published at',
+      hasArrow: true,
+      arrow: undefined,
+    },
+    {
+      label: 'Replies',
+      hasArrow: true,
+      arrow: undefined,
+    },
+    {
+      label: 'Reactions',
+      hasArrow: true,
+      arrow: undefined,
+    },
+  ];
 
+  console.log('index.tsx: ', postListQuery);
   return (
     <Container>
       <Flex justify="between" flexWrap className="gap-x-20 gap-y-3">
-        <Typography variant="titleMd">Posts (14)</Typography>
+        <Typography variant="titleMd">
+          Posts {!loading && `(${postListQuery?.data?.posts.totalCount})`}
+        </Typography>
 
         <Flex className="h-[36px] md:max-w-[450px] gap-x-5" fullWidth>
           <Input
@@ -38,48 +72,61 @@ function PostListPage({ postListQuery }: IPostListPage) {
             onChange={() => {}}
           />
 
-          <Link href={NAVIGATION.NEW_POST}>
+          <NextLink href={NAVIGATION.NEW_POST} prefetch>
             <Button btnSize="small" className="text-nowrap">
               Add Post
             </Button>
-          </Link>
+          </NextLink>
         </Flex>
       </Flex>
 
       <div className="mt-5">
         <Table>
           <THead>
-            <Th>Title</Th>
-
-            <Th>Author</Th>
-
-            <Th>Space</Th>
-
-            <Th hasArrow>Published at</Th>
-
-            <Th hasArrow>Replies</Th>
-
-            <Th hasArrow>Reactions</Th>
+            {tHeads.map(({ label, ...trProps }, index) => {
+              return (
+                <Th key={index} {...trProps}>
+                  {label}
+                </Th>
+              );
+            })}
           </THead>
 
           <TBody>
-            {Array(10)
-              .fill(null)
-              .map((_, index) => (
-                <Tr key={index}>
-                  <Td>Lorem</Td>
+            {!loading &&
+              postListQuery?.data?.posts?.nodes?.map(item => (
+                <Tr key={item.id}>
+                  <Td>
+                    <Link href={NAVIGATION.POST_DETAIL(item.id)}>
+                      {item.title}
+                    </Link>
+                  </Td>
 
-                  <Td>Amir Hemmati</Td>
+                  <Td>{item.owner?.member?.name}</Td>
 
-                  <Td>Discussions</Td>
+                  <Td>{item.space?.name}</Td>
 
-                  <Td>09/08/2024</Td>
+                  <Td>{transformDate(item.createdAt)}</Td>
 
-                  <Td>0</Td>
+                  <Td>{item.totalRepliesCount}</Td>
 
-                  <Td>0</Td>
+                  <Td>{item.reactionsCount}</Td>
                 </Tr>
               ))}
+
+            {loading &&
+              Array(10)
+                .fill(null)
+                .map((_, index) => (
+                  <Tr key={index}>
+                    <Td loading />
+                    <Td loading />
+                    <Td loading />
+                    <Td loading />
+                    <Td loading />
+                    <Td loading />
+                  </Tr>
+                ))}
           </TBody>
         </Table>
       </div>

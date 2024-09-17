@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { toast } from 'react-toastify';
 
 import {
   Button,
@@ -11,13 +11,41 @@ import {
 } from '@/components';
 import { BackIcon } from '@/components/icons';
 import NAVIGATION from '@/data/routes';
+import { PostMappingTypeEnum, useCreatePostMutation } from '@/gql/generated';
 import { useForm } from '@/hooks';
 
 function NewPostPage() {
-  const router = useRouter();
+  // const router = useRouter();
+  const [mutateCreatePost, createPostData] = useCreatePostMutation();
   const { register, handleSubmit } = useForm({
-    onSubmit() {
-      router.push(NAVIGATION.POST_LIST);
+    onSubmit(values) {
+      mutateCreatePost({
+        variables: {
+          input: {
+            ownerId: 'K19m9tUVmf',
+            postTypeId: 'kxz0iFb7GgOvZUW',
+            publish: true,
+            mappingFields: [
+              {
+                key: 'title',
+                value: `"${values.title}"`,
+                type: PostMappingTypeEnum.Text,
+              },
+              {
+                key: 'content',
+                value: `"<p>${values.content}</p>"`,
+                type: PostMappingTypeEnum.Text,
+              },
+            ],
+            tagNames: [],
+          },
+          spaceId: 'HXAACOY1sQ5z',
+        },
+        onCompleted() {
+          toast('Add', { type: 'success' });
+        },
+      });
+      // router.push(NAVIGATION.POST_LIST);
     },
     initialValues: {
       title: {
@@ -40,7 +68,7 @@ function NewPostPage() {
   });
 
   return (
-    <Container>
+    <Container fullHeight>
       <div className="w-full h-full flex justify-center items-center">
         <form className="w-[800px]" onSubmit={handleSubmit}>
           <Card>
@@ -57,7 +85,9 @@ function NewPostPage() {
             <Textarea className="mt-5" {...register('content')} />
 
             <div className="flex flex-row-reverse items-center gap-2 mt-12">
-              <Button type="submit">Publish</Button>
+              <Button type="submit" loading={createPostData.loading}>
+                Publish
+              </Button>
 
               <Link href={NAVIGATION.POST_LIST}>
                 <Button variant="neutral">Cancel</Button>

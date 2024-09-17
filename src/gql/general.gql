@@ -1,0 +1,19 @@
+query initializeApp {
+  subscriberSettings {
+    id
+    networkId
+  }
+  postTypes(limit: 10) {
+    nodes {
+      name
+      id
+    }
+  }
+  spaces(limit: 30) {
+    nodes {
+      id
+      name
+      imageId
+    }
+  }
+}

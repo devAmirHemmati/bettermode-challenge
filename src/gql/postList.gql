@@ -1,13 +1,40 @@
-query myAwesomePosts {
-  posts(limit: 10) {
+query postList(
+  $offset: Int!
+  $limit: Int!
+  $orderByString: String
+  $reverse: Boolean
+) {
+  posts(
+    offset: $offset
+    limit: $limit
+    orderByString: $orderByString
+    reverse: $reverse
+  ) {
     nodes {
-      createdAt
+      id
       title
+      owner {
+        member {
+          name
+        }
+      }
+      space {
+        name
+      }
+      createdAt
+      reactionsCount
+      totalRepliesCount
     }
     totalCount
     pageInfo {
       hasNextPage
       endCursor
     }
+  }
+}
+
+mutation createPost($input: CreatePostInput!, $spaceId: ID!) {
+  createPost(input: $input, spaceId: $spaceId) {
+    status
   }
 }

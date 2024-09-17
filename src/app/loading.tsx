@@ -1,7 +1,5 @@
-import PostListPage from './posts';
-
 function Loading() {
-  return <PostListPage loading />;
+  return <div>loading</div>;
 }
 
 export default Loading;

@@ -1,15 +1,24 @@
-import { query } from '@/configs/apolloClient';
-import { MyAwesomePostsDocument } from '@/gql/generated';
+import { PreloadQuery } from '@/configs/apolloClient';
+import { PostListDocument, PostListQueryVariables } from '@/gql/generated';
 
 import PostListPage from './posts';
 
-async function _PostListPage() {
-  const postListQuery = await query({
-    query: MyAwesomePostsDocument,
-  });
+const initialVariables: PostListQueryVariables = {
+  offset: 0,
+  limit: 10,
+  orderByString: 'createdAt',
+  reverse: true,
+};
 
-  return <PostListPage postListQuery={postListQuery} />;
+async function _PostListPage() {
+  return (
+    <PreloadQuery query={PostListDocument} variables={initialVariables}>
+      <PostListPage initialVariables={initialVariables} />
+    </PreloadQuery>
+  );
 }
+
+export const revalidate = 5;
 
 export const dynamic = 'force-dynamic';
 

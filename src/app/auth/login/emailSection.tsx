@@ -9,7 +9,7 @@ import { useForm } from '@/hooks';
 import { E_ACTIVE_SECTION, ILoginSectionProps } from '.';
 
 function LoginEmailSection({ setActiveSection }: ILoginSectionProps) {
-  const [mutateValidateEmail, emailValidationData] =
+  const [mutateEmailValidation, emailValidationData] =
     useAuthValidationEmailMutationMutation();
   const router = useRouter();
   const { handleSubmit, register } = useForm({
@@ -24,7 +24,7 @@ function LoginEmailSection({ setActiveSection }: ILoginSectionProps) {
       },
     },
     onSubmit(values) {
-      mutateValidateEmail({
+      mutateEmailValidation({
         variables: {
           email: values.email.toString(),
         },

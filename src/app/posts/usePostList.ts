@@ -12,13 +12,15 @@ function usePostList(initialVariables?: PostListQueryVariables) {
   const postListQuery = usePostListSuspenseQuery({ variables });
 
   const handleChangeOrderBy = (orderKey: string) => {
+    if (!variables) return;
     const isCurrentOrderBy = variables?.orderByString === orderKey;
 
-    setVariables({
-      ...(variables as PostListQueryVariables),
-      orderByString: orderKey,
-      reverse: isCurrentOrderBy ? !variables.reverse : true,
-    });
+    const updatedVariables = { ...variables };
+
+    updatedVariables.orderByString = orderKey;
+    updatedVariables.reverse = isCurrentOrderBy ? !variables.reverse : true;
+
+    setVariables(updatedVariables);
   };
 
   const handleSearch = (value: string) => {

@@ -66,7 +66,6 @@ function PostListPage({ loading, initialVariables }: IPostListPage) {
             inputClassName="h-full w-full"
             className="w-full"
             placeholder="Search ..."
-            value={variables?.query || ''}
             onChange={event => {
               handleSearch(event.currentTarget.value);
             }}

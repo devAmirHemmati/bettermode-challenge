@@ -9,16 +9,16 @@ export interface ILinkProps extends PropsWithChildren<LinkProps> {
   className?: string;
 }
 
-function Link({
+function TypographyLink({
   children,
   variant = 'md',
   className = '',
   ...props
 }: ILinkProps) {
   return (
-    <NextLink legacyBehavior {...props}>
+    <NextLink {...props}>
       <Typography
-        component="a"
+        component="span"
         className={`text-blue-400 hover:text-blue-600 hover:underline transition-all ${className}`}
         variant={variant}
       >
@@ -28,4 +28,4 @@ function Link({
   );
 }
 
-export default Link;
+export default TypographyLink;

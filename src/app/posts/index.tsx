@@ -1,12 +1,12 @@
 'use client';
-import NextLink from 'next/link';
+import Link from 'next/link';
 
 import {
   Button,
   Container,
   Flex,
   Input,
-  Link,
+  LinedSkeleton,
   Table,
   TBody,
   Td,
@@ -14,68 +14,80 @@ import {
   THead,
   Tr,
   Typography,
+  TypographyLink,
 } from '@/components';
 import NAVIGATION from '@/data/routes';
-import { PostListQueryVariables } from '@/gql/generated';
-import transformDate from '@/utils/date';
-
-import usePostList from './usePostList';
+import { PostListQuery, PostListQueryVariables } from '@/gql/generated';
+import { transformDate } from '@/utils';
 
 interface IPostListPage {
-  // postListQuery?: ApolloQueryResult<PostListQuery | undefined>;
+  postListQuery?: PostListQuery;
+  variables?: PostListQueryVariables;
   loading?: boolean;
-  initialVariables?: PostListQueryVariables;
+  handleSearch?: (value: string) => void;
+  handleChangeOrderBy?: (orderKey: string) => void;
 }
 
-function PostListPage({ loading, initialVariables }: IPostListPage) {
-  const { postListQuery, variables, handleChangeOrderBy, handleSearch } =
-    usePostList(initialVariables);
-  const tHeads = [
-    {
-      label: 'Title',
-    },
-    {
-      label: 'Author',
-    },
-    {
-      label: 'Space',
-    },
-    {
-      label: 'Published at',
-      orderKey: 'createdAt',
-    },
-    {
-      label: 'Replies',
-      orderKey: 'totalRepliesCount',
-    },
-    {
-      label: 'Reactions',
-      orderKey: 'reactionsCount',
-    },
-  ];
+const tHeads = [
+  {
+    label: 'Title',
+  },
+  {
+    label: 'Author',
+  },
+  {
+    label: 'Space',
+  },
+  {
+    label: 'Published at',
+    orderKey: 'createdAt',
+  },
+  {
+    label: 'Replies',
+    orderKey: 'totalRepliesCount',
+  },
+  {
+    label: 'Reactions',
+    orderKey: 'reactionsCount',
+  },
+];
+
+function PostList({
+  loading,
+  postListQuery,
+  variables,
+  handleChangeOrderBy,
+  handleSearch,
+}: IPostListPage) {
+  const isClient = typeof window === 'object';
 
   return (
     <Container>
       <Flex justify="between" flexWrap className="gap-x-20 gap-y-3">
         <Typography variant="titleMd">
-          Posts {!loading && `(${postListQuery?.data?.posts.totalCount})`}
+          Posts {!loading && `(${postListQuery?.posts.totalCount})`}
         </Typography>
 
         <Flex className="h-[36px] md:max-w-[450px] gap-x-5" fullWidth>
-          <Input
-            inputClassName="h-full w-full"
-            className="w-full"
-            placeholder="Search ..."
-            onChange={event => {
-              handleSearch(event.currentTarget.value);
-            }}
-          />
+          {!loading ? (
+            <Input
+              inputClassName="h-full w-full"
+              className="w-full"
+              placeholder="Search ..."
+              onSearch={value => {
+                if (!handleSearch) return;
+                handleSearch(value);
+              }}
+            />
+          ) : (
+            <LinedSkeleton fullHeight noRounded />
+          )}
 
-          <NextLink href={NAVIGATION.NEW_POST} prefetch>
+          <Link href={NAVIGATION.NEW_POST} prefetch>
             <Button btnSize="small" className="text-nowrap">
               Add Post
             </Button>
-          </NextLink>
+          </Link>
         </Flex>
       </Flex>
 
@@ -92,10 +104,14 @@ function PostListPage({ loading, initialVariables }: IPostListPage) {
                   key={index}
                   hasArrow={hasOrderKey}
                   arrow={isActiveOrderKey ? arrow : undefined}
-                  onClick={() => {
-                    if (!orderKey) return;
-                    handleChangeOrderBy(orderKey);
-                  }}
+                  onClick={
+                    isClient
+                      ? () => {
+                          if (!orderKey || !handleChangeOrderBy) return;
+                          handleChangeOrderBy(orderKey);
+                        }
+                      : undefined
+                  }
                 >
                   {label}
                 </Th>
@@ -104,29 +120,23 @@ function PostListPage({ loading, initialVariables }: IPostListPage) {
           </THead>
 
           <TBody>
-            {!loading &&
-              postListQuery?.data?.posts?.nodes?.map(item => (
-                <Tr key={item.id}>
-                  <Td>
-                    <Link href={NAVIGATION.POST_DETAIL(item.id)}>
-                      {item.title}
-                    </Link>
-                  </Td>
-
-                  <Td>{item.owner?.member?.name}</Td>
-
-                  <Td>{item.space?.name}</Td>
-
-                  <Td>{transformDate(item.createdAt)}</Td>
-
-                  <Td>{item.totalRepliesCount}</Td>
-
-                  <Td>{item.reactionsCount}</Td>
-                </Tr>
-              ))}
+            {postListQuery?.posts?.nodes?.map(item => (
+              <Tr key={item.id}>
+                <Td>
+                  <TypographyLink href={NAVIGATION.POST_DETAIL(item.id)}>
+                    {item.title}
+                  </TypographyLink>
+                </Td>
+                <Td>{item.owner?.member?.name}</Td>
+                <Td>{item.space?.name}</Td>
+                <Td>{transformDate(item.createdAt)}</Td>
+                <Td>{item.totalRepliesCount}</Td>
+                <Td>{item.reactionsCount}</Td>
+              </Tr>
+            ))}
 
             {loading &&
-              Array(10)
+              Array(variables?.limit)
                 .fill(null)
                 .map((_, index) => (
                   <Tr key={index}>
@@ -145,4 +155,4 @@ function PostListPage({ loading, initialVariables }: IPostListPage) {
   );
 }
 
-export default PostListPage;
+export default PostList;

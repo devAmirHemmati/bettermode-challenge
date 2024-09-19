@@ -3920,6 +3920,31 @@ export type NetworkAuthMemberPropsTotalUnreadPostsCountArgs = {
   type?: InputMaybe<Array<SpaceType>>;
 };
 
+export type NetworkCurrentUsages = {
+  __typename?: 'NetworkCurrentUsages';
+  aiSearchAccess?: Maybe<Scalars['Boolean']['output']>;
+  analyticsAccess?: Maybe<Scalars['Boolean']['output']>;
+  analyticsDaysLimit?: Maybe<Scalars['Float']['output']>;
+  apiAccess?: Maybe<Scalars['Boolean']['output']>;
+  apiRequestCapacity?: Maybe<Array<ApiRequestLimit>>;
+  appIds?: Maybe<Array<Scalars['String']['output']>>;
+  auditLogAccess?: Maybe<Scalars['Boolean']['output']>;
+  customDomain?: Maybe<Scalars['Boolean']['output']>;
+  emailCustomization?: Maybe<Scalars['Boolean']['output']>;
+  jwtSSOAccess?: Maybe<Scalars['Boolean']['output']>;
+  membersCapacity?: Maybe<Scalars['Float']['output']>;
+  monthlyEmailCapacity?: Maybe<Scalars['Float']['output']>;
+  monthlyVisitorCapacity?: Maybe<Scalars['Float']['output']>;
+  oauth2SSOAccess?: Maybe<Scalars['Boolean']['output']>;
+  postTypesCapacity?: Maybe<Scalars['Float']['output']>;
+  samlSSOAccess?: Maybe<Scalars['Boolean']['output']>;
+  seatsCapacity?: Maybe<Scalars['Float']['output']>;
+  sitemap?: Maybe<Scalars['Boolean']['output']>;
+  spacesCapacity?: Maybe<Scalars['Float']['output']>;
+  storageCapacity?: Maybe<Scalars['Float']['output']>;
+  translationLocaleCapacity?: Maybe<Scalars['Float']['output']>;
+};
+
 export type NetworkImages = {
   __typename?: 'NetworkImages';
   darkFavicon?: Maybe<Media>;
@@ -4082,7 +4107,7 @@ export type NetworkUsages = {
   __typename?: 'NetworkUsages';
   fileStorageUsage: Scalars['Float']['output'];
   imageStorageUsage: Scalars['Float']['output'];
-  usages: NetworkUsageLimits;
+  usages: NetworkCurrentUsages;
 };
 
 export enum NetworkVisibility {

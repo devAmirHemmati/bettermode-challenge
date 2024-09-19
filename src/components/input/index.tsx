@@ -1,4 +1,11 @@
-import { AllHTMLAttributes, PropsWithChildren, useId } from 'react';
+import {
+  AllHTMLAttributes,
+  PropsWithChildren,
+  useEffect,
+  useId,
+  useRef,
+  useState,
+} from 'react';
 
 import Typography from '../typography';
 
@@ -13,7 +20,14 @@ export interface IInputProps
   successMessage?: string;
   success?: boolean;
   hint?: string;
+  onSearch?: (value: string) => void;
+  searchTime?: number;
 }
+
+const initialSearchState = {
+  isTyping: false,
+  value: '',
+};
 
 function Input({
   type = 'text',
@@ -28,10 +42,39 @@ function Input({
   errorMessage,
   onChange,
   max,
+  onSearch,
+  searchTime = 1000,
   ...props
 }: IInputProps) {
+  useState;
   const reactId = useId();
   const _id = id || reactId;
+  const [searchState, setSearchState] = useState<{
+    isTyping: boolean;
+    value: string;
+  }>(initialSearchState);
+  const intervalRef = useRef<NodeJS.Timeout>();
+
+  useEffect(() => {
+    if (!searchState.isTyping || !onSearch) return;
+
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+    }
+
+    intervalRef.current = setTimeout(() => {
+      onSearch(searchState.value);
+      setSearchState(initialSearchState);
+    }, searchTime);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchState, searchTime]);
+
+  const handleSearch = (value: string) => {
+    setSearchState({
+      isTyping: true,
+      value,
+    });
+  };
 
   return (
     <div className={`${className}`}>
@@ -53,13 +96,16 @@ function Input({
         className={`block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 ${error && 'border-red-400 focus:outline-red-400 focus:border-red-400'} ${success && 'border-green-500 focus:outline-green-500 focus:border-green-500'} ${inputClassName}`}
         onChange={
           typeof window !== 'undefined'
-            ? (event) => {
-                if (max && event.target.value.length > parseInt(`${max}`)) {
-                  return;
-                }
+            ? event => {
+                const value = event.target.value;
+                if (typeof max === 'number' && value.length > max) return;
 
                 if (typeof onChange === 'function') {
                   onChange(event);
+                }
+
+                if (onSearch) {
+                  handleSearch(value);
                 }
               }
             : undefined

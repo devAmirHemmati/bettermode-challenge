@@ -1,9 +1,7 @@
-import { Suspense } from 'react';
-
 import { PreloadQuery } from '@/configs/apolloClient';
 import { PostListDocument, PostListQueryVariables } from '@/gql/generated';
 
-import PostListPage from './posts';
+import PostListPageClient from './posts/client';
 
 const initialVariables: PostListQueryVariables = {
   offset: 0,
@@ -15,9 +13,7 @@ const initialVariables: PostListQueryVariables = {
 async function _PostListPage() {
   return (
     <PreloadQuery query={PostListDocument} variables={initialVariables}>
-      <Suspense fallback={<div>My Loading</div>}>
-        <PostListPage initialVariables={initialVariables} />
-      </Suspense>
+      <PostListPageClient initialVariables={initialVariables} />
     </PreloadQuery>
   );
 }

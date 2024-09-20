@@ -79,8 +79,8 @@ function NewPostPage() {
           },
           spaceId: values.space.toString(),
         },
-        onCompleted() {
-          router.push(NAVIGATION.POST_LIST);
+        onCompleted(data) {
+          router.push(NAVIGATION.POST_DETAIL(data.createPost.id));
         },
       });
     },
@@ -100,7 +100,7 @@ function NewPostPage() {
         <form className="w-[800px]" onSubmit={handleSubmit}>
           <Card>
             <div className="flex items-center gap-2 mb-4">
-              <Link href={NAVIGATION.POST_LIST}>
+              <Link href={NAVIGATION.POST_LIST} aria-label="back to post list">
                 <BackIcon />
               </Link>
 

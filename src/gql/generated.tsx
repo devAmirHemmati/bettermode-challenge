@@ -8488,7 +8488,7 @@ export type CreatePostMutationVariables = Exact<{
 
 export type CreatePostMutation = {
   __typename?: 'Mutation';
-  createPost: { __typename?: 'Post'; status: PostStatus };
+  createPost: { __typename?: 'Post'; status: PostStatus; id: string };
 };
 
 export const AuthValidationEmailMutationDocument = gql`
@@ -8736,6 +8736,7 @@ export const CreatePostDocument = gql`
   mutation createPost($input: CreatePostInput!, $spaceId: ID!) {
     createPost(input: $input, spaceId: $spaceId) {
       status
+      id
     }
   }
 `;

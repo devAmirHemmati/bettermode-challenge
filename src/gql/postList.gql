@@ -38,5 +38,6 @@ query postList(
 mutation createPost($input: CreatePostInput!, $spaceId: ID!) {
   createPost(input: $input, spaceId: $spaceId) {
     status
+    id
   }
 }

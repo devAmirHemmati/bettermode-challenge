@@ -1,3 +1,4 @@
+export { default as AppLoading } from './appLoading';
 export { default as Button } from './button';
 export { default as Card } from './card';
 export { default as Container } from './container';

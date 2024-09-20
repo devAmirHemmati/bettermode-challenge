@@ -24,7 +24,6 @@ function EmailVerificationSection({ setActiveSection }: ILoginSectionProps) {
         `/login?email=${email}&verificationCode=${values.code}`,
       );
 
-      console.log(response);
       if (response.data.message !== 'success') {
         toast(response.data.message, { type: 'error' });
         return;

@@ -23,7 +23,8 @@ import { transformDate } from '@/utils';
 interface IPostListPage {
   postListQuery?: PostListQuery;
   variables?: PostListQueryVariables;
-  loading?: boolean;
+  isLoadingMore?: boolean;
+  isInitial?: boolean;
   handleSearch?: (value: string) => void;
   handleChangeOrderBy?: (orderKey: string) => void;
 }
@@ -53,23 +54,25 @@ const tHeads = [
 ];
 
 function PostList({
-  loading,
+  isLoadingMore,
   postListQuery,
   variables,
   handleChangeOrderBy,
   handleSearch,
+  isInitial,
 }: IPostListPage) {
-  const isClient = typeof window === 'object';
+  const allLoading = !isInitial || isLoadingMore;
+  const loadingCount = variables ? variables.limit - variables.offset : 10;
 
   return (
     <Container>
       <Flex justify="between" flexWrap className="gap-x-20 gap-y-3">
         <Typography variant="titleMd">
-          Posts {!loading && `(${postListQuery?.posts.totalCount})`}
+          Posts {!allLoading && `(${postListQuery?.posts.totalCount})`}
         </Typography>
 
         <Flex className="h-[36px] md:max-w-[450px] gap-x-5" fullWidth>
-          {!loading ? (
+          {isInitial ? (
             <Input
               inputClassName="h-full w-full"
               className="w-full"
@@ -83,7 +86,7 @@ function PostList({
             <LinedSkeleton fullHeight noRounded />
           )}
 
-          <Link href={NAVIGATION.NEW_POST} prefetch>
+          <Link href={NAVIGATION.NEW_POST}>
             <Button btnSize="small" className="text-nowrap">
               Add Post
             </Button>
@@ -104,14 +107,10 @@ function PostList({
                   key={index}
                   hasArrow={hasOrderKey}
                   arrow={isActiveOrderKey ? arrow : undefined}
-                  onClick={
-                    isClient
-                      ? () => {
-                          if (!orderKey || !handleChangeOrderBy) return;
-                          handleChangeOrderBy(orderKey);
-                        }
-                      : undefined
-                  }
+                  onClick={() => {
+                    if (!orderKey || !handleChangeOrderBy) return;
+                    handleChangeOrderBy(orderKey);
+                  }}
                 >
                   {label}
                 </Th>
@@ -120,23 +119,24 @@ function PostList({
           </THead>
 
           <TBody>
-            {postListQuery?.posts?.nodes?.map(item => (
-              <Tr key={item.id}>
-                <Td>
-                  <TypographyLink href={NAVIGATION.POST_DETAIL(item.id)}>
-                    {item.title}
-                  </TypographyLink>
-                </Td>
-                <Td>{item.owner?.member?.name}</Td>
-                <Td>{item.space?.name}</Td>
-                <Td>{transformDate(item.createdAt)}</Td>
-                <Td>{item.totalRepliesCount}</Td>
-                <Td>{item.reactionsCount}</Td>
-              </Tr>
-            ))}
+            {isInitial &&
+              postListQuery?.posts?.nodes?.map(item => (
+                <Tr key={item.id}>
+                  <Td>
+                    <TypographyLink href={NAVIGATION.POST_DETAIL(item.id)}>
+                      {item.title}
+                    </TypographyLink>
+                  </Td>
+                  <Td>{item.owner?.member?.name}</Td>
+                  <Td>{item.space?.name}</Td>
+                  <Td>{transformDate(item.createdAt)}</Td>
+                  <Td>{item.totalRepliesCount}</Td>
+                  <Td>{item.reactionsCount}</Td>
+                </Tr>
+              ))}
 
-            {loading &&
-              Array(variables?.limit)
+            {allLoading &&
+              Array(loadingCount)
                 .fill(null)
                 .map((_, index) => (
                   <Tr key={index}>

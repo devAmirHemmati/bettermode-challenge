@@ -6,19 +6,28 @@ import PostList from '.';
 import usePostList from './usePostList';
 
 interface IPostListPage {
-  initialVariables?: PostListQueryVariables;
+  initialVariables: PostListQueryVariables;
 }
 
 function PostListPageClient({ initialVariables }: IPostListPage) {
-  const { postListQuery, variables, handleChangeOrderBy, handleSearch } =
-    usePostList(initialVariables);
+  const {
+    handleChangeOrderBy,
+    handleSearch,
+    postListQuery,
+    variables,
+    isLoadingMore,
+    isInitial,
+  } = usePostList(initialVariables);
 
+  console.log(postListQuery);
   return (
     <PostList
       variables={variables}
       postListQuery={postListQuery.data}
       handleChangeOrderBy={handleChangeOrderBy}
       handleSearch={handleSearch}
+      isLoadingMore={isLoadingMore}
+      isInitial={isInitial}
     />
   );
 }

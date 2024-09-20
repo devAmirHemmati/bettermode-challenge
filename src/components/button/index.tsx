@@ -1,3 +1,4 @@
+'use client';
 import { AllHTMLAttributes, PropsWithChildren } from 'react';
 
 export interface IButtonProps

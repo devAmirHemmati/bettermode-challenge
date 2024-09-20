@@ -1,3 +1,4 @@
+'use client';
 import { AllHTMLAttributes, PropsWithChildren, useId } from 'react';
 
 import Typography from '../typography';

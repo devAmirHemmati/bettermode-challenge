@@ -1,3 +1,4 @@
+'use client';
 import {
   AllHTMLAttributes,
   PropsWithChildren,
@@ -43,7 +44,7 @@ function Input({
   onChange,
   max,
   onSearch,
-  searchTime = 1000,
+  searchTime = 500,
   ...props
 }: IInputProps) {
   useState;

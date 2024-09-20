@@ -5,6 +5,7 @@ export { default as Container } from './container';
 export { default as Flex } from './flex';
 export { default as Input } from './input';
 export { default as TypographyLink } from './link';
+export { default as Select } from './select';
 export { LinedSkeleton } from './skeleton';
 export { default as Table } from './table';
 export { default as TBody } from './table/tBody';

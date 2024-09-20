@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { toast } from 'react-toastify';
 
 import {
+  AppLoading,
   Button,
   Card,
   Container,
@@ -11,18 +12,23 @@ import {
 } from '@/components';
 import { BackIcon } from '@/components/icons';
 import NAVIGATION from '@/data/routes';
-import { PostMappingTypeEnum, useCreatePostMutation } from '@/gql/generated';
+import {
+  PostMappingTypeEnum,
+  useCreatePostMutation,
+  useInitializeAppQuery,
+} from '@/gql/generated';
 import { useForm } from '@/hooks';
 
 function NewPostPage() {
   // const router = useRouter();
+  const initialQuery = useInitializeAppQuery();
   const [mutateCreatePost, createPostData] = useCreatePostMutation();
   const { register, handleSubmit } = useForm({
     onSubmit(values) {
       mutateCreatePost({
         variables: {
           input: {
-            ownerId: 'K19m9tUVmf',
+            ownerId: initialQuery.data?.subscriberSettings.networkId,
             postTypeId: 'kxz0iFb7GgOvZUW',
             publish: true,
             mappingFields: [
@@ -67,6 +73,7 @@ function NewPostPage() {
     },
   });
 
+  if (initialQuery.loading) return <AppLoading />;
   return (
     <Container fullHeight>
       <div className="w-full h-full flex justify-center items-center">

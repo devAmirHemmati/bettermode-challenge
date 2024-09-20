@@ -11,7 +11,7 @@ export const geistSans = localFont({
 
 const preview: Preview = {
   decorators: [
-    (Story) => {
+    Story => {
       return (
         <div style={{ fontFamily: geistSans.style.fontFamily }}>
           <Story />

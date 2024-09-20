@@ -1,6 +1,6 @@
 import { AllHTMLAttributes, PropsWithChildren } from 'react';
 
-import { ArrowDown } from '../icons';
+import { ArrowDownIcon } from '../icons';
 
 interface IThProps extends PropsWithChildren<AllHTMLAttributes<HTMLElement>> {
   hasArrow?: boolean;
@@ -18,7 +18,7 @@ function Th({ className = '', children, arrow, hasArrow, ...props }: IThProps) {
         {children}
 
         {hasArrow && typeof arrow === 'string' && (
-          <ArrowDown
+          <ArrowDownIcon
             width="16px"
             height="16px"
             rotate={arrow === 'top'}

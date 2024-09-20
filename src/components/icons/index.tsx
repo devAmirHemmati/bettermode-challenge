@@ -6,5 +6,5 @@ export interface IIconProps extends AllHTMLAttributes<SVGElement> {
   color?: string;
 }
 
-export { default as ArrowDown } from './arrowDown';
+export { default as ArrowDownIcon } from './arrowDown';
 export { default as BackIcon } from './back';

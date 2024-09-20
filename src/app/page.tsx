@@ -1,7 +1,7 @@
 import { PreloadQuery } from '@/configs/apolloClient';
 import { PostListDocument, PostListQueryVariables } from '@/gql/generated';
 
-import PostListPageClient from './posts/client';
+import PostListClient from './posts';
 
 const initialVariables: PostListQueryVariables = {
   offset: 0,
@@ -10,16 +10,16 @@ const initialVariables: PostListQueryVariables = {
   reverse: true,
 };
 
-async function _PostListPage() {
+async function PostListPageSSR() {
   return (
     <PreloadQuery query={PostListDocument} variables={initialVariables}>
-      <PostListPageClient initialVariables={initialVariables} />
+      <PostListClient />
     </PreloadQuery>
   );
 }
 
-export const revalidate = 5;
+export const revalidate = 0;
 
 export const dynamic = 'force-dynamic';
 
-export default _PostListPage;
+export default PostListPageSSR;

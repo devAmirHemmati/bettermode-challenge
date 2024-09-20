@@ -23,7 +23,7 @@ import {
 import { useForm } from '@/hooks';
 import { normalizeImageIcon } from '@/utils';
 
-function NewPostPage() {
+function NewPostPageClient() {
   const router = useRouter();
   const initialQuery = useInitializeAppQuery();
   const [mutateCreatePost, createPostData] = useCreatePostMutation();
@@ -41,15 +41,15 @@ function NewPostPage() {
       space: {},
       title: {
         label: 'Title',
-        max: 100,
+        max: 60,
         validation: {
           type: 'not-empty',
           errorMessage: 'Type the title of post',
         },
       },
       content: {
-        label: 'Content',
-        max: 400,
+        label: '',
+        max: 20000,
         validation: {
           type: 'not-empty',
           errorMessage: 'Type the content of post',
@@ -71,7 +71,7 @@ function NewPostPage() {
               },
               {
                 key: 'content',
-                value: `"<p>${values.content}</p>"`,
+                value: JSON.stringify(values.content as string),
                 type: PostMappingTypeEnum.Text,
               },
             ],
@@ -85,6 +85,7 @@ function NewPostPage() {
       });
     },
   });
+  console.log('Form: ', form);
 
   useEffect(() => {
     if (initialQuery.loading) return;
@@ -140,4 +141,4 @@ function NewPostPage() {
   );
 }
 
-export default NewPostPage;
+export default NewPostPageClient;

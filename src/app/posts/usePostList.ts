@@ -1,25 +1,15 @@
 'use client';
-import { useEffect, useState } from 'react';
 
-import {
-  PostListQueryVariables,
-  usePostListSuspenseQuery,
-} from '@/gql/generated';
+import { usePostListContext } from '@/context';
+import { usePostListSuspenseQuery } from '@/gql/generated';
 
-function usePostList(initialVariables?: PostListQueryVariables) {
-  const [isInitial, setIsInitial] = useState<boolean>(false);
-  const [isLoadingMore] = useState<boolean>(false);
-  const [variables, setVariables] = useState<
-    PostListQueryVariables | undefined
-  >(initialVariables);
+function usePostList() {
+  const { isInitial, isLoadingMore, variables, handleSetVariables } =
+    usePostListContext();
   const postListQuery = usePostListSuspenseQuery({
     variables,
     fetchPolicy: 'cache-and-network',
   });
-
-  useEffect(() => {
-    setIsInitial(true);
-  }, []);
 
   const handleChangeOrderBy = (orderKey: string) => {
     if (!variables) return;
@@ -30,7 +20,7 @@ function usePostList(initialVariables?: PostListQueryVariables) {
     updatedVariables.orderByString = orderKey;
     updatedVariables.reverse = isCurrentOrderBy ? !variables.reverse : true;
 
-    setVariables(updatedVariables);
+    handleSetVariables(updatedVariables);
   };
 
   const handleSearch = async (value: string) => {
@@ -40,8 +30,11 @@ function usePostList(initialVariables?: PostListQueryVariables) {
 
     updatedVariables.query = value === '' ? undefined : value.trim();
 
-    setVariables(updatedVariables);
+    handleSetVariables(updatedVariables);
   };
+
+  const allLoading = !isInitial || isLoadingMore;
+  const loadingCount = variables ? variables.limit - variables.offset : 10;
 
   return {
     variables,
@@ -50,6 +43,8 @@ function usePostList(initialVariables?: PostListQueryVariables) {
     handleSearch,
     isLoadingMore,
     isInitial,
+    allLoading,
+    loadingCount,
   };
 }
 

@@ -16,15 +16,8 @@
         │   └── [id]/
         │       └── page.tsx
         ├── configs/
-        │   ├── apolloClient.ts
-        │   ├── apolloProvider.tsx
-        │   ├── axios.ts
-        │   └── fonts.ts
         ├── data/
-        │   ├── app.ts
-        │   └── routes.ts
         ├── gql/
-        │   └── generated.tsx
         ├── hooks
         ├── utils
         ├── components

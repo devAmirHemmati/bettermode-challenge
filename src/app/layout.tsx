@@ -6,6 +6,7 @@ import { ToastContainer } from 'react-toastify';
 
 import ApolloProvider from '@/configs/apolloProvider';
 import { geistSans } from '@/configs/fonts';
+import ContextProvider from '@/context/provider';
 
 export const metadata: Metadata = {
   title: 'BetterMode',
@@ -25,7 +26,9 @@ export default function RootLayout({
         <ApolloProvider>
           <ToastContainer position="bottom-center" />
 
-          <div className="w-full min-h-[100vh]">{children}</div>
+          <ContextProvider>
+            <div className="w-full min-h-[100vh]">{children}</div>
+          </ContextProvider>
         </ApolloProvider>
       </body>
     </html>

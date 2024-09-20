@@ -17,17 +17,9 @@ import {
   TypographyLink,
 } from '@/components';
 import NAVIGATION from '@/data/routes';
-import { PostListQuery, PostListQueryVariables } from '@/gql/generated';
 import { transformDate } from '@/utils';
 
-interface IPostListPage {
-  postListQuery?: PostListQuery;
-  variables?: PostListQueryVariables;
-  isLoadingMore?: boolean;
-  isInitial?: boolean;
-  handleSearch?: (value: string) => void;
-  handleChangeOrderBy?: (orderKey: string) => void;
-}
+import usePostList from './usePostList';
 
 const tHeads = [
   {
@@ -53,22 +45,22 @@ const tHeads = [
   },
 ];
 
-function PostList({
-  isLoadingMore,
-  postListQuery,
-  variables,
-  handleChangeOrderBy,
-  handleSearch,
-  isInitial,
-}: IPostListPage) {
-  const allLoading = !isInitial || isLoadingMore;
-  const loadingCount = variables ? variables.limit - variables.offset : 10;
+function PostListClient() {
+  const {
+    handleChangeOrderBy,
+    handleSearch,
+    postListQuery,
+    variables,
+    loadingCount,
+    allLoading,
+    isInitial,
+  } = usePostList();
 
   return (
     <Container>
       <Flex justify="between" flexWrap className="gap-x-20 gap-y-3">
         <Typography variant="titleMd">
-          Posts {!allLoading && `(${postListQuery?.posts.totalCount})`}
+          Posts {!allLoading && `(${postListQuery.data.posts.totalCount})`}
         </Typography>
 
         <Flex className="h-[36px] md:max-w-[450px] gap-x-5" fullWidth>
@@ -120,14 +112,14 @@ function PostList({
 
           <TBody>
             {isInitial &&
-              postListQuery?.posts?.nodes?.map(item => (
+              postListQuery?.data?.posts?.nodes?.map(item => (
                 <Tr key={item.id}>
                   <Td>
                     <TypographyLink href={NAVIGATION.POST_DETAIL(item.id)}>
                       {item.title}
                     </TypographyLink>
                   </Td>
-                  <Td>{item.owner?.member?.name}</Td>
+                  <Td>{item.createdBy?.member?.name}</Td>
                   <Td>{item.space?.name}</Td>
                   <Td>{transformDate(item.createdAt)}</Td>
                   <Td>{item.totalRepliesCount}</Td>
@@ -155,4 +147,4 @@ function PostList({
   );
 }
 
-export default PostList;
+export default PostListClient;

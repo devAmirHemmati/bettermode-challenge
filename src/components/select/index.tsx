@@ -80,6 +80,7 @@ function Select({
                 <Image
                   src={activeOption.imageUrl}
                   alt={activeOption.label}
+                  draggable={false}
                   className="mr-2"
                   width={20}
                   height={20}

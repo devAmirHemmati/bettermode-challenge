@@ -27,7 +27,7 @@ function Flex({
       className={`
         flex
         justify-${justify}
-        align-${align}
+        items-${align}
         ${fullWidth && 'w-full'}
         ${fullHeight && 'h-full'}
         ${flexWrap && 'flex-wrap'}

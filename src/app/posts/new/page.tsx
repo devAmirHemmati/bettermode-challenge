@@ -1,9 +1,9 @@
 'use client';
 
-import NewPostPage from '.';
+import NewPostPageClient from '.';
 
-function _NewPostPage() {
-  return <NewPostPage />;
+function NewPostPageCSR() {
+  return <NewPostPageClient />;
 }
 
-export default _NewPostPage;
+export default NewPostPageCSR;

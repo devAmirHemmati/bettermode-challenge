@@ -96,6 +96,7 @@ function useForm<T extends { [key: string]: IRegisterInput }>(data: IForm<T>) {
       success: input.success,
       hint: input.hint,
       error: input.error,
+      value: input.value,
       errorMessage: input.validation?.errorMessage,
       max: input.max,
       onChange: (event: any) => onChange(inputName, event),

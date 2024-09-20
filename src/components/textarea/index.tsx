@@ -12,6 +12,7 @@ export interface ITextareaProps
   error?: boolean;
   successMessage?: string;
   success?: boolean;
+  max?: number;
 }
 
 function Textarea({
@@ -23,6 +24,8 @@ function Textarea({
   errorMessage,
   success,
   successMessage,
+  max,
+  onChange,
   ...props
 }: ITextareaProps) {
   const reactId = useId();
@@ -42,10 +45,35 @@ function Textarea({
       )}
 
       <textarea
-        {...props}
         id={_id}
         rows={5}
+        onPaste={event => {
+          event.preventDefault();
+          const paste = event.clipboardData.getData('text');
+          const current = event.currentTarget.value;
+
+          if (max && current.length + paste.length > max) {
+            event.preventDefault();
+            return;
+          }
+
+          event.currentTarget.value += paste;
+
+          if (onChange) {
+            onChange(event);
+          }
+        }}
+        onChange={event => {
+          if (max && event.target.value.length > max) {
+            return;
+          }
+
+          if (onChange) {
+            onChange(event);
+          }
+        }}
         className={`block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 ${error && 'border-red-400 focus:outline-red-400 focus:border-red-400'} ${success && 'border-green-500 focus:outline-green-500 focus:border-green-500'} resize-none ${inputClassName}`}
+        {...props}
       />
 
       {success && successMessage && (

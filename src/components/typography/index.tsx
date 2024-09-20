@@ -31,7 +31,7 @@ const variantStyles = {
 const Typography: FC<ITypographyProps> = ({
   component: Component = 'p',
   variant = 'md',
-  className,
+  className = '',
   align = 'left',
   children,
   ...props

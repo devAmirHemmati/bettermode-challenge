@@ -8467,7 +8467,7 @@ export type PostListQuery = {
       createdAt: any;
       reactionsCount: number;
       totalRepliesCount: number;
-      owner?: {
+      createdBy?: {
         __typename?: 'SpaceMember';
         member?: { __typename?: 'Member'; name?: string | null } | null;
       } | null;
@@ -8479,6 +8479,60 @@ export type PostListQuery = {
       endCursor?: string | null;
     };
   };
+};
+
+export type PostDetailQueryVariables = Exact<{
+  id: Scalars['ID']['input'];
+}>;
+
+export type PostDetailQuery = {
+  __typename?: 'Query';
+  post: {
+    __typename?: 'Post';
+    id: string;
+    title?: string | null;
+    createdAt: any;
+    reactionsCount: number;
+    contentSummary?: {
+      __typename?: 'PostContentSummary';
+      summary: string;
+    } | null;
+    createdBy?: {
+      __typename?: 'SpaceMember';
+      member?: { __typename?: 'Member'; name?: string | null } | null;
+    } | null;
+    space?: {
+      __typename?: 'Space';
+      name: string;
+      imageId?: string | null;
+    } | null;
+    reactions?: Array<{
+      __typename?: 'PostReactionDetail';
+      reacted: boolean;
+      reaction: string;
+      count: number;
+    }> | null;
+  };
+};
+
+export type AddPostReactionMutationVariables = Exact<{
+  id: Scalars['ID']['input'];
+  reaction: Scalars['String']['input'];
+}>;
+
+export type AddPostReactionMutation = {
+  __typename?: 'Mutation';
+  addReaction: { __typename?: 'Action'; status: ActionStatus };
+};
+
+export type RemovePostReactionMutationVariables = Exact<{
+  id: Scalars['ID']['input'];
+  reaction: Scalars['String']['input'];
+}>;
+
+export type RemovePostReactionMutation = {
+  __typename?: 'Mutation';
+  removeReaction: { __typename?: 'Action'; status: ActionStatus };
 };
 
 export type CreatePostMutationVariables = Exact<{
@@ -8646,7 +8700,7 @@ export const PostListDocument = gql`
       nodes {
         id
         title
-        owner {
+        createdBy {
           member {
             name
           }
@@ -8731,6 +8785,206 @@ export type PostListSuspenseQueryHookResult = ReturnType<
 export type PostListQueryResult = Apollo.QueryResult<
   PostListQuery,
   PostListQueryVariables
+>;
+export const PostDetailDocument = gql`
+  query PostDetail($id: ID!) {
+    post(id: $id) {
+      id
+      title
+      contentSummary(length: 20000) {
+        summary
+      }
+      createdAt
+      reactionsCount
+      createdBy {
+        member {
+          name
+        }
+      }
+      space {
+        name
+        imageId
+      }
+      reactions {
+        reacted
+        reaction
+        count
+      }
+    }
+  }
+`;
+
+/**
+ * __usePostDetailQuery__
+ *
+ * To run a query within a React component, call `usePostDetailQuery` and pass it any options that fit your needs.
+ * When your component renders, `usePostDetailQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = usePostDetailQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function usePostDetailQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    PostDetailQuery,
+    PostDetailQueryVariables
+  > &
+    (
+      | { variables: PostDetailQueryVariables; skip?: boolean }
+      | { skip: boolean }
+    ),
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<PostDetailQuery, PostDetailQueryVariables>(
+    PostDetailDocument,
+    options,
+  );
+}
+export function usePostDetailLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    PostDetailQuery,
+    PostDetailQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<PostDetailQuery, PostDetailQueryVariables>(
+    PostDetailDocument,
+    options,
+  );
+}
+export function usePostDetailSuspenseQuery(
+  baseOptions?: Apollo.SuspenseQueryHookOptions<
+    PostDetailQuery,
+    PostDetailQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<PostDetailQuery, PostDetailQueryVariables>(
+    PostDetailDocument,
+    options,
+  );
+}
+export type PostDetailQueryHookResult = ReturnType<typeof usePostDetailQuery>;
+export type PostDetailLazyQueryHookResult = ReturnType<
+  typeof usePostDetailLazyQuery
+>;
+export type PostDetailSuspenseQueryHookResult = ReturnType<
+  typeof usePostDetailSuspenseQuery
+>;
+export type PostDetailQueryResult = Apollo.QueryResult<
+  PostDetailQuery,
+  PostDetailQueryVariables
+>;
+export const AddPostReactionDocument = gql`
+  mutation addPostReaction($id: ID!, $reaction: String!) {
+    addReaction(
+      postId: $id
+      input: { overrideSingleChoiceReactions: true, reaction: $reaction }
+    ) {
+      status
+    }
+  }
+`;
+export type AddPostReactionMutationFn = Apollo.MutationFunction<
+  AddPostReactionMutation,
+  AddPostReactionMutationVariables
+>;
+
+/**
+ * __useAddPostReactionMutation__
+ *
+ * To run a mutation, you first call `useAddPostReactionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddPostReactionMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addPostReactionMutation, { data, loading, error }] = useAddPostReactionMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      reaction: // value for 'reaction'
+ *   },
+ * });
+ */
+export function useAddPostReactionMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    AddPostReactionMutation,
+    AddPostReactionMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    AddPostReactionMutation,
+    AddPostReactionMutationVariables
+  >(AddPostReactionDocument, options);
+}
+export type AddPostReactionMutationHookResult = ReturnType<
+  typeof useAddPostReactionMutation
+>;
+export type AddPostReactionMutationResult =
+  Apollo.MutationResult<AddPostReactionMutation>;
+export type AddPostReactionMutationOptions = Apollo.BaseMutationOptions<
+  AddPostReactionMutation,
+  AddPostReactionMutationVariables
+>;
+export const RemovePostReactionDocument = gql`
+  mutation removePostReaction($id: ID!, $reaction: String!) {
+    removeReaction(postId: $id, reaction: $reaction) {
+      status
+    }
+  }
+`;
+export type RemovePostReactionMutationFn = Apollo.MutationFunction<
+  RemovePostReactionMutation,
+  RemovePostReactionMutationVariables
+>;
+
+/**
+ * __useRemovePostReactionMutation__
+ *
+ * To run a mutation, you first call `useRemovePostReactionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemovePostReactionMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removePostReactionMutation, { data, loading, error }] = useRemovePostReactionMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      reaction: // value for 'reaction'
+ *   },
+ * });
+ */
+export function useRemovePostReactionMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    RemovePostReactionMutation,
+    RemovePostReactionMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    RemovePostReactionMutation,
+    RemovePostReactionMutationVariables
+  >(RemovePostReactionDocument, options);
+}
+export type RemovePostReactionMutationHookResult = ReturnType<
+  typeof useRemovePostReactionMutation
+>;
+export type RemovePostReactionMutationResult =
+  Apollo.MutationResult<RemovePostReactionMutation>;
+export type RemovePostReactionMutationOptions = Apollo.BaseMutationOptions<
+  RemovePostReactionMutation,
+  RemovePostReactionMutationVariables
 >;
 export const CreatePostDocument = gql`
   mutation createPost($input: CreatePostInput!, $spaceId: ID!) {

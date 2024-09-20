@@ -15,7 +15,7 @@ query postList(
     nodes {
       id
       title
-      owner {
+      createdBy {
         member {
           name
         }
@@ -32,6 +32,47 @@ query postList(
       hasNextPage
       endCursor
     }
+  }
+}
+
+query PostDetail($id: ID!) {
+  post(id: $id) {
+    id
+    title
+    contentSummary(length: 20000) {
+      summary
+    }
+    createdAt
+    reactionsCount
+    createdBy {
+      member {
+        name
+      }
+    }
+    space {
+      name
+      imageId
+    }
+    reactions {
+      reacted
+      reaction
+      count
+    }
+  }
+}
+
+mutation addPostReaction($id: ID!, $reaction: String!) {
+  addReaction(
+    postId: $id
+    input: { overrideSingleChoiceReactions: true, reaction: $reaction }
+  ) {
+    status
+  }
+}
+
+mutation removePostReaction($id: ID!, $reaction: String!) {
+  removeReaction(postId: $id, reaction: $reaction) {
+    status
   }
 }
 

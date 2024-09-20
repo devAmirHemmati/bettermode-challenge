@@ -8,3 +8,4 @@ export interface IIconProps extends AllHTMLAttributes<SVGElement> {
 
 export { default as ArrowDownIcon } from './arrowDown';
 export { default as BackIcon } from './back';
+export { default as HeartIcon } from './heart';

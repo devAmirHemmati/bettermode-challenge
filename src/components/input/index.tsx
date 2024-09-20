@@ -23,6 +23,7 @@ export interface IInputProps
   hint?: string;
   onSearch?: (value: string) => void;
   searchTime?: number;
+  max?: number;
 }
 
 const initialSearchState = {
@@ -95,22 +96,34 @@ function Input({
         type={type}
         id={_id}
         className={`block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 ${error && 'border-red-400 focus:outline-red-400 focus:border-red-400'} ${success && 'border-green-500 focus:outline-green-500 focus:border-green-500'} ${inputClassName}`}
-        onChange={
-          typeof window !== 'undefined'
-            ? event => {
-                const value = event.target.value;
-                if (typeof max === 'number' && value.length > max) return;
+        onPaste={event => {
+          event.preventDefault();
+          const paste = event.clipboardData.getData('text');
+          const current = event.currentTarget.value;
 
-                if (typeof onChange === 'function') {
-                  onChange(event);
-                }
+          if (max && current.length + paste.length > max) {
+            event.preventDefault();
+            return;
+          }
 
-                if (onSearch) {
-                  handleSearch(value);
-                }
-              }
-            : undefined
-        }
+          event.currentTarget.value += paste;
+
+          if (onChange) {
+            onChange(event);
+          }
+        }}
+        onChange={event => {
+          const value = event.target.value;
+          if (max && value.length > max) return;
+
+          if (typeof onChange === 'function') {
+            onChange(event);
+          }
+
+          if (onSearch) {
+            handleSearch(value);
+          }
+        }}
       />
 
       {hint && !success && !error && !errorMessage && !successMessage && (

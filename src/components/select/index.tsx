@@ -22,7 +22,6 @@ export interface ISelectProps extends AllHTMLAttributes<HTMLDivElement> {
   hint?: string;
   options: Array<IOption>;
   value?: IOption['value'];
-  handleSetValue: (option: IOption) => void;
   onClickItem: (option: IOption, index: number) => void;
 }
 

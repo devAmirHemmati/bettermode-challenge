@@ -14,6 +14,7 @@ function usePostList(initialVariables?: PostListQueryVariables) {
   >(initialVariables);
   const postListQuery = usePostListSuspenseQuery({
     variables,
+    fetchPolicy: 'cache-and-network',
   });
 
   useEffect(() => {

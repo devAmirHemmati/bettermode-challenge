@@ -1,5 +1,6 @@
 import Link from 'next/link';
-import { toast } from 'react-toastify';
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 
 import {
   AppLoading,
@@ -7,10 +8,12 @@ import {
   Card,
   Container,
   Input,
+  Select,
   Textarea,
   Typography,
 } from '@/components';
 import { BackIcon } from '@/components/icons';
+import APP_DATA from '@/data/app';
 import NAVIGATION from '@/data/routes';
 import {
   PostMappingTypeEnum,
@@ -18,42 +21,24 @@ import {
   useInitializeAppQuery,
 } from '@/gql/generated';
 import { useForm } from '@/hooks';
+import { normalizeImageIcon } from '@/utils';
 
 function NewPostPage() {
-  // const router = useRouter();
+  const router = useRouter();
   const initialQuery = useInitializeAppQuery();
   const [mutateCreatePost, createPostData] = useCreatePostMutation();
-  const { register, handleSubmit } = useForm({
-    onSubmit(values) {
-      mutateCreatePost({
-        variables: {
-          input: {
-            ownerId: initialQuery.data?.subscriberSettings.networkId,
-            postTypeId: 'kxz0iFb7GgOvZUW',
-            publish: true,
-            mappingFields: [
-              {
-                key: 'title',
-                value: `"${values.title}"`,
-                type: PostMappingTypeEnum.Text,
-              },
-              {
-                key: 'content',
-                value: `"<p>${values.content}</p>"`,
-                type: PostMappingTypeEnum.Text,
-              },
-            ],
-            tagNames: [],
-          },
-          spaceId: 'HXAACOY1sQ5z',
-        },
-        onCompleted() {
-          toast('Add', { type: 'success' });
-        },
-      });
-      // router.push(NAVIGATION.POST_LIST);
-    },
+  const spaces =
+    initialQuery.data?.spaces.nodes?.filter(
+      space => space.name !== APP_DATA.postListKey,
+    ) || [];
+  const postType =
+    initialQuery.data?.postTypes.nodes?.find(
+      node => node.name === APP_DATA.discussionKey,
+    )?.id || '';
+
+  const { register, handleSubmit, handleSetValue, form } = useForm({
     initialValues: {
+      space: {},
       title: {
         label: 'Title',
         max: 100,
@@ -71,7 +56,42 @@ function NewPostPage() {
         },
       },
     },
+    onSubmit(values) {
+      mutateCreatePost({
+        variables: {
+          input: {
+            ownerId: initialQuery.data?.subscriberSettings.networkId,
+            postTypeId: postType,
+            publish: true,
+            mappingFields: [
+              {
+                key: 'title',
+                value: `"${values.title}"`,
+                type: PostMappingTypeEnum.Text,
+              },
+              {
+                key: 'content',
+                value: `"<p>${values.content}</p>"`,
+                type: PostMappingTypeEnum.Text,
+              },
+            ],
+            tagNames: [],
+          },
+          spaceId: values.space.toString(),
+        },
+        onCompleted() {
+          router.push(NAVIGATION.POST_LIST);
+        },
+      });
+    },
   });
+
+  useEffect(() => {
+    if (initialQuery.loading) return;
+
+    handleSetValue('space', spaces[0].id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialQuery.loading]);
 
   if (initialQuery.loading) return <AppLoading />;
   return (
@@ -87,7 +107,20 @@ function NewPostPage() {
               <Typography variant="titleMd">Create a new discussion</Typography>
             </div>
 
-            <Input {...register('title')} />
+            <Select
+              label="Post in"
+              value={form.space.value}
+              onClickItem={option => {
+                handleSetValue('space', option.value);
+              }}
+              options={spaces.map(option => ({
+                label: option.name,
+                value: option.id,
+                imageUrl: normalizeImageIcon(option.imageId),
+              }))}
+            />
+
+            <Input className="mt-5" {...register('title')} />
 
             <Textarea className="mt-5" {...register('content')} />
 

@@ -32,7 +32,7 @@ interface IForm<T> {
 function useForm<T extends { [key: string]: IRegisterInput }>(data: IForm<T>) {
   const { initialValues, validationMode = 'onSubmit', onSubmit } = data;
 
-  const mappedItems = Object.keys(initialValues).map((inputName) => {
+  const mappedItems = Object.keys(initialValues).map(inputName => {
     const input = initialValues[inputName];
 
     return [
@@ -74,6 +74,14 @@ function useForm<T extends { [key: string]: IRegisterInput }>(data: IForm<T>) {
         ...getValidationObj(updatedForm[inputName]),
       };
     }
+
+    setForm(updatedForm);
+  };
+
+  const handleSetValue = (inputName: keyof T, value: string) => {
+    const updatedForm = { ...form };
+
+    updatedForm[inputName].value = value;
 
     setForm(updatedForm);
   };
@@ -132,7 +140,7 @@ function useForm<T extends { [key: string]: IRegisterInput }>(data: IForm<T>) {
       };
     }
 
-    const getValues = Object.keys(mappedForm).map((key) => [
+    const getValues = Object.keys(mappedForm).map(key => [
       key,
       mappedForm[key].value,
     ]);
@@ -144,6 +152,7 @@ function useForm<T extends { [key: string]: IRegisterInput }>(data: IForm<T>) {
     register,
     form,
     handleSubmit,
+    handleSetValue,
   };
 }
 

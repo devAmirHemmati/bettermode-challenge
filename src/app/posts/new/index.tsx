@@ -85,7 +85,6 @@ function NewPostPageClient() {
       });
     },
   });
-  console.log('Form: ', form);
 
   useEffect(() => {
     if (initialQuery.loading) return;

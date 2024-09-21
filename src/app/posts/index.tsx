@@ -47,6 +47,7 @@ const tHeads = [
 
 function PostListClient() {
   const {
+    posts,
     handleChangeOrderBy,
     handleSearch,
     postListQuery,
@@ -54,6 +55,7 @@ function PostListClient() {
     loadingCount,
     allLoading,
     isInitial,
+    thresholdElementRef,
   } = usePostList();
 
   return (
@@ -112,20 +114,27 @@ function PostListClient() {
 
           <TBody>
             {isInitial &&
-              postListQuery?.data?.posts?.nodes?.map(item => (
-                <Tr key={item.id}>
-                  <Td>
-                    <TypographyLink href={NAVIGATION.POST_DETAIL(item.id)}>
-                      {item.title}
-                    </TypographyLink>
-                  </Td>
-                  <Td>{item.createdBy?.member?.name}</Td>
-                  <Td>{item.space?.name}</Td>
-                  <Td>{transformDate(item.createdAt)}</Td>
-                  <Td>{item.totalRepliesCount}</Td>
-                  <Td>{item.reactionsCount}</Td>
-                </Tr>
-              ))}
+              posts.map((item, index) => {
+                const isLastPost = index === posts.length - 1;
+
+                return (
+                  <Tr
+                    key={item.id}
+                    ref={isLastPost ? thresholdElementRef : undefined}
+                  >
+                    <Td>
+                      <TypographyLink href={NAVIGATION.POST_DETAIL(item.id)}>
+                        {item.title}
+                      </TypographyLink>
+                    </Td>
+                    <Td>{item.createdBy?.member?.name}</Td>
+                    <Td>{item.space?.name}</Td>
+                    <Td>{transformDate(item.createdAt)}</Td>
+                    <Td>{item.totalRepliesCount}</Td>
+                    <Td>{item.reactionsCount}</Td>
+                  </Tr>
+                );
+              })}
 
             {allLoading &&
               Array(loadingCount)

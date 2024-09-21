@@ -5,7 +5,7 @@ import PostListClient from './posts';
 
 const initialVariables: PostListQueryVariables = {
   offset: 0,
-  limit: 10,
+  limit: 15,
   orderByString: 'createdAt',
   reverse: true,
 };

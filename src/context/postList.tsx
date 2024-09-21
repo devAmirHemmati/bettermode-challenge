@@ -16,8 +16,8 @@ interface IPostListState {
 }
 
 interface IPostListContext extends IPostListState {
-  handleLoadMore(): void;
-  handleFinishLoadMore(): void;
+  handleStartLoadingMore(): void;
+  handleFinishLoadingMore(): void;
   handleSetVariables(variables: PostListQueryVariables): void;
 }
 
@@ -26,7 +26,7 @@ const initial: IPostListState = {
   isLoadingMore: false,
   variables: {
     offset: 0,
-    limit: 10,
+    limit: 15,
     orderByString: 'createdAt',
     reverse: true,
   },
@@ -34,8 +34,8 @@ const initial: IPostListState = {
 
 const postListContext = createContext<IPostListContext>({
   ...initial,
-  handleLoadMore() {},
-  handleFinishLoadMore() {},
+  handleStartLoadingMore() {},
+  handleFinishLoadingMore() {},
   handleSetVariables() {},
 });
 
@@ -55,14 +55,14 @@ function PostListContextProvider({ children }: PropsWithChildren) {
     }));
   }, []);
 
-  const handleLoadMore = () => {
+  const handleStartLoadingMore = () => {
     setState(prevState => ({
       ...prevState,
       isLoadingMore: true,
     }));
   };
 
-  const handleFinishLoadMore = () => {
+  const handleFinishLoadingMore = () => {
     setState(prevState => ({
       ...prevState,
       isLoadingMore: false,
@@ -80,8 +80,8 @@ function PostListContextProvider({ children }: PropsWithChildren) {
     <postListContext.Provider
       value={{
         ...state,
-        handleFinishLoadMore,
-        handleLoadMore,
+        handleFinishLoadingMore,
+        handleStartLoadingMore,
         handleSetVariables,
       }}
     >

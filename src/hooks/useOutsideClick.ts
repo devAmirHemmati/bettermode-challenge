@@ -1,3 +1,4 @@
+'use client';
 import { useEffect } from 'react';
 
 function useOutsideClick(ref: { current?: HTMLElement }, handler: () => void) {

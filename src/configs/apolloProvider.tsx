@@ -7,7 +7,6 @@ import {
   InMemoryCache,
   SSRMultipartLink,
 } from '@apollo/experimental-nextjs-app-support';
-import { toast } from 'react-toastify';
 
 import APP_DATA from '@/data/app';
 
@@ -39,7 +38,7 @@ function makeClient() {
 export function apolloOnError(error: ApolloError) {
   if (!error.message) return;
 
-  toast(error.message, { type: 'error' });
+  console.log(error.message);
 }
 
 function ApolloProvider({ children }: React.PropsWithChildren) {

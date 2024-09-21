@@ -15,7 +15,7 @@ export function LinedSkeleton({
 }: ILinedSkeletonProps) {
   return (
     <div
-      className={`bg-gray-200 ${!noRounded && 'rounded-full'} dark:bg-gray-700 w-full ${fullHeight ? 'h-full' : 'h-4 '} ${full && 'absolute left-0 top-0 w-full h-full'} ${className}`}
+      className={`bg-gray-200 ${!noRounded && 'rounded-full'} w-full ${fullHeight ? 'h-full' : 'h-4 '} ${full && 'absolute left-0 top-0 w-full h-full'} ${className}`}
       {...props}
     />
   );

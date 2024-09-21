@@ -2,6 +2,8 @@
 
 I've developed this project for `BetterMode hiring challenge` using **Next.js -SSR-** and **Graphql**
 
+[Check the website](http://localhost:3000)
+
 ## How to Run the Project
 
 1. First, clone the project using the following command

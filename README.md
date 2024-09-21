@@ -2,7 +2,7 @@
 
 I've developed this project for `BetterMode hiring challenge` using **Next.js -SSR-** and **Graphql**
 
-[Check the website](http://localhost:3000)
+[**Check** the website](https://develop--bettermode-challenge.netlify.app/)
 
 ## How to Run the Project
 

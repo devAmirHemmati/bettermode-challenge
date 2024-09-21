@@ -78,7 +78,7 @@ function usePostList() {
   };
 
   const allLoading = !isInitial || isLoadingMore;
-  const loadingCount = variables ? variables.limit - variables.offset : 10;
+  const loadingCount = variables ? variables.limit - variables.offset : 15;
   const posts = postListQuery?.data?.posts?.nodes || [];
 
   return {

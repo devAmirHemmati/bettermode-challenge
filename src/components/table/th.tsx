@@ -12,7 +12,7 @@ function Th({ className = '', children, arrow, hasArrow, ...props }: IThProps) {
     <th
       scope="row"
       role="columnheader"
-      className={`px-6 py-4 font-bold normal-case whitespace-nowrap ${!hasArrow && 'text-gray-900'} ${hasArrow && 'text-blue-500 hover:text-blue-700 cursor-pointer transition-all'} ${className}`}
+      className={`px-6 py-4 font-bold normal-case whitespace-nowrap ${!hasArrow && 'text-gray-900'} ${hasArrow && 'text-blue-600 hover:text-blue-700 cursor-pointer transition-all'} ${className}`}
       {...props}
     >
       <div className="flex items-center gap-2">

@@ -8603,7 +8603,7 @@ export const InitializeAppDocument = gql`
       id
       networkId
     }
-    postTypes(limit: 10) {
+    postTypes(limit: 15) {
       nodes {
         name
         id

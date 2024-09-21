@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 export interface UseIntersectedElementProps {
   callback: () => void;
@@ -10,28 +10,32 @@ const useIntersectedElement = <ThresholdElement extends Element = Element>({
   callback,
   options,
 }: UseIntersectedElementProps) => {
-  const [thresholdElement, thresholdElementRef] =
+  const [thresholdElement, setThresholdElement] =
     useState<ThresholdElement | null>(null);
 
-  const observer = useMemo(
-    () =>
-      new IntersectionObserver(([entry]) => {
-        if (!entry.isIntersecting) return;
-
-        callback();
-      }, options),
-    [callback, options],
+  const thresholdElementRef = useCallback(
+    (element: ThresholdElement | null) => {
+      setThresholdElement(element);
+    },
+    [],
   );
 
   useEffect(() => {
     if (!thresholdElement) return;
 
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) {
+        callback();
+      }
+    }, options);
+
     observer.observe(thresholdElement);
 
     return () => {
       observer.unobserve(thresholdElement);
+      observer.disconnect();
     };
-  }, [observer, thresholdElement]);
+  }, [callback, options, thresholdElement]);
 
   return { thresholdElementRef };
 };

@@ -19,7 +19,7 @@ function TypographyLink({
     <NextLink {...props}>
       <Typography
         component="span"
-        className={`text-blue-400 hover:text-blue-600 hover:underline transition-all ${className}`}
+        className={`text-blue-600 hover:text-blue-700 hover:underline transition-all ${className}`}
         variant={variant}
       >
         {children}

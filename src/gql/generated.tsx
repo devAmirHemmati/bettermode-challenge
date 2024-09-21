@@ -8453,6 +8453,7 @@ export type PostListQueryVariables = Exact<{
   orderByString?: InputMaybe<Scalars['String']['input']>;
   reverse?: InputMaybe<Scalars['Boolean']['input']>;
   query?: InputMaybe<Scalars['String']['input']>;
+  after?: InputMaybe<Scalars['String']['input']>;
 }>;
 
 export type PostListQuery = {
@@ -8689,6 +8690,7 @@ export const PostListDocument = gql`
     $orderByString: String
     $reverse: Boolean
     $query: String
+    $after: String
   ) {
     posts(
       offset: $offset
@@ -8696,6 +8698,7 @@ export const PostListDocument = gql`
       orderByString: $orderByString
       reverse: $reverse
       query: $query
+      after: $after
     ) {
       nodes {
         id
@@ -8738,6 +8741,7 @@ export const PostListDocument = gql`
  *      orderByString: // value for 'orderByString'
  *      reverse: // value for 'reverse'
  *      query: // value for 'query'
+ *      after: // value for 'after'
  *   },
  * });
  */

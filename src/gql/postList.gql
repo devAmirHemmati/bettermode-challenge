@@ -4,6 +4,7 @@ query postList(
   $orderByString: String
   $reverse: Boolean
   $query: String
+  $after: String
 ) {
   posts(
     offset: $offset
@@ -11,6 +12,7 @@ query postList(
     orderByString: $orderByString
     reverse: $reverse
     query: $query
+    after: $after
   ) {
     nodes {
       id
